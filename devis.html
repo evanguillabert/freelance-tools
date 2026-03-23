@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Devis Gratuit — PDF Professionnel | FreelanceTools</title>
+    <meta name="description" content="Créez un devis professionnel en PDF gratuitement. Aucune inscription, téléchargement instantané. Idéal pour les freelances et auto-entrepreneurs.">
+
+    <link rel="alternate" hreflang="fr" href="[freelancetools.fr](https://freelancetools.fr/generateur-devis)">
+    <link rel="alternate" hreflang="en" href="[freelancetools.fr](https://freelancetools.fr/en/invoice-generator)">
+
+    <script src="[cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+
+    <!-- jsPDF : la librairie qui génère le PDF dans le navigateur, sans serveur -->
+    <script src="[cdnjs.cloudflare.com](https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js)"></script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "[schema.org](https://schema.org)",
+        "@type": "WebApplication",
+        "name": "Générateur de Devis Freelance",
+        "description": "Créez un devis PDF professionnel gratuitement",
+        "url": "[freelancetools.fr](https://freelancetools.fr/generateur-devis)",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Any",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
+    }
+    </script>
+</head>
+
+<body class="bg-slate-50 min-h-screen font-sans">
+
+
+<!-- ======================================================
+     HEADER
+     ====================================================== -->
+<header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-2">
+            <span class="text-2xl">⚡</span>
+            <span class="text-xl font-black text-indigo-600">FreelanceTools</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-500">
+            <a href="index.html" class="hover:text-slate-800 transition" data-i18n="nav-tjm">Calcul TJM</a>
+            <a href="#" class="text-indigo-600 border-b-2 border-indigo-600 pb-0.5" data-i18n="nav-quote">Générateur devis</a>
+            <a href="#" class="hover:text-slate-800 transition" data-i18n="nav-contract">Contrat</a>
+            <a href="#" class="hover:text-slate-800 transition" data-i18n="nav-charges">Calcul charges</a>
+        </nav>
+        <button onclick="toggleLang()"
+            class="flex items-center gap-2 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 px-3 py-2 rounded-lg text-sm font-semibold transition border border-transparent hover:border-indigo-200">
+            <span id="lang-flag">🇬🇧</span>
+            <span id="lang-label">EN</span>
+        </button>
+    </div>
+</header>
+
+
+<!-- ======================================================
+     HERO
+     ====================================================== -->
+<section class="bg-gradient-to-br from-indigo-600 via-indigo-500 to-violet-600 text-white py-14 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+        <div class="inline-flex items-center gap-2 bg-white/15 px-4 py-1.5 rounded-full text-sm font-medium mb-5">
+            <span>📄</span>
+            <span data-i18n="badge">Générateur de devis PDF — 100% gratuit</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-black mb-4 leading-tight" data-i18n="hero-title">
+            Créez votre devis<br>en 2 minutes
+        </h1>
+        <p class="text-indigo-100 text-lg max-w-xl mx-auto" data-i18n="hero-sub">
+            Remplissez le formulaire, prévisualisez en temps réel, téléchargez en PDF. Zéro inscription.
+        </p>
+    </div>
+</section>
+
+
+<!-- ======================================================
+     FORMULAIRE + PREVIEW
+     ====================================================== -->
+<main class="max-w-6xl mx-auto px-4 py-12">
+<div class="grid lg:grid-cols-2 gap-8">
+
+
+    <!-- ===== COLONNE GAUCHE : FORMULAIRE ===== -->
+    <div class="space-y-6">
+
+
+        <!-- Bloc : Vos informations -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+            <h2 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <span class="bg-indigo-100 text-indigo-600 rounded-lg px-2.5 py-1 text-sm font-black">1</span>
+                <span data-i18n="section-you">Vos informations</span>
+            </h2>
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1" data-i18n="your-name">Prénom Nom / Société</label>
+                        <input type="text" id="your-name" placeholder="Jean Dupont" oninput="updatePreview()"
+                            class="w-full border-2 border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1" data-i18n="your-status">Statut</label>
+                        <input type="text" id="your-status" placeholder="Auto-entrepreneur" oninput="updatePreview()"
+                            class="w-full border-2 border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1" data-i18n="your-email">Email</label>
+                        <input type="email" id="your-email" placeholder="jean@email.com" oninput="updatePreview()"
+                            class="w-full border-2 border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1" data-i18n="your-siret">SIRET</label>
+                        <input type="text" id="your-siret" placeholder="123 456 789 00010" oninput="updatePreview()"
+                            class="w-full border-2 border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1" data-i18n="your-address">Adresse</label>
+                    <input type="text" id="your-address" placeholder="12 rue de la Paix, 75001 Paris" oninput="updatePreview()"
+                        class="w-full border-2 border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition">
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Bloc : Informations client -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+            <h2 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <span class="bg-indigo-100 text-indigo-600 rounded-lg px-2.5 py-1 text-sm font-black">2</span>
+                <span data-i18n="section-client">Informations client</span>
+            </h2>
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1" data-i18n="client-name">Nom client / Société</label>
+                        <input type="text" id="client-name" placeholder="Acme Corp" oninput="updatePreview()"
+                            class="w-full border-2 border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1" data-i18n="client-contact">Contact</label>
+                        <input type="text" id="client-contact" placeholder="Marie Martin" oninput="updatePreview()"
+                            class="w-full border-2 border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1" data-i18n="client-address">Adresse client</label>
+                    <input type="text" id="client-address" placeholder="45 avenue Victor Hugo, 69001 Lyon" oninput="updatePreview()"
+                        class="w-full border-2 border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition">
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Bloc : Prestations -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+            <h2 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <span class="bg-indigo-100 text-indigo-600 rounded-lg px-2.5 py-1 text-sm font-black">3</span>
+                <span data-i18n="section-items">Prestations</span>
+            </h2>
+
+            <!-- En-tête du tableau -->
+            <div class="grid grid-cols-12 gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2 px-1">
+                <div class="col-span-5" data-i18n="col-description">Description</div>
+                <div class="col-span-2 text-center" data-i18n="col-qty">Qté</div>
+                <div class="col-span-3 text-center" data-i18n="col-price">Prix unit.</div>
+                <div class="col-span-2 text-right" data-i18n="col-total">Total</div>
+            </div>
+
+            <!-- Liste des lignes dynamiques -->
+            <div id="items-list" class="space-y-2"></div>
+
+            <!-- Bouton ajouter une ligne -->
+            <button onclick="addItem()"
+                class="mt-4 w-full border-2 border-dashed border-slate-200 hover:border-indigo-400 hover:text-indigo-600 text-slate-400 rounded-xl py-2.5 text-sm font-medium transition">
+                <span data-i18n="add-item">+ Ajouter une prestation</span>
+            </button>
+        </div>
+
+
+        <!-- Bloc : Options du devis -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+            <h2 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <span class="bg-indigo-100 text-indigo-600 rounded-lg px-2.5 py-1 text-sm font-black">4</span>
+                <span data-i18n="section-options">Options</span>
+            </h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1" data-i18n="quote-number">N° de devis</label>
+                    <input type="text" id="quote-number" placeholder="DEVIS-2025-001" oninput="updatePreview()"
+                        class="w-full border-2 border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1" data-i18n="quote-date">Date</label>
+                    <input type="date" id="quote-date" oninput="updatePreview()"
+                        class="w-full border-2 border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1" data-i18n="quote-validity">Validité (jours)</label>
+                    <input type="number" id="quote-validity" value="30" oninput="updatePreview()"
+                        class="w-full border-2 border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1" data-i18n="tva-label">TVA</label>
+                    <select id="tva-rate" onchange="updatePreview()"
+                        class="w-full border-2 border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition bg-white">
+                        <option value="0" data-i18n="tva-none">Non assujetti (AE)</option>
+                        <option value="0.20" data-i18n="tva-20">TVA 20%</option>
+                        <option value="0.10" data-i18n="tva-10">TVA 10%</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-4">
+                <label class="block text-xs font-semibold text-slate-500 mb-1" data-i18n="payment-terms">Conditions de paiement</label>
+                <input type="text" id="payment-terms" oninput="updatePreview()"
+                    class="w-full border-2 border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition"
+                    data-i18n-placeholder="payment-placeholder">
+            </div>
+        </div>
+
+
+        <!-- CTA Téléchargement -->
+        <button onclick="generatePDF()"
+            class="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-black py-4 px-6 rounded-2xl transition text-lg shadow-xl shadow-indigo-200 flex items-center justify-center gap-3">
+            <span>📥</span>
+            <span data-i18n="btn-pdf">Télécharger le PDF</span>
+        </button>
+
+    </div>
+
+
+    <!-- ===== COLONNE DROITE : APERÇU EN TEMPS RÉEL ===== -->
+    <div class="lg:sticky lg:top-24 lg:self-start">
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
+
+            <!-- Titre aperçu -->
+            <div class="bg-slate-50 border-b border-slate-100 px-6 py-3 flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-red-400"></span>
+                <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+                <span class="w-3 h-3 rounded-full bg-green-400"></span>
+                <span class="text-slate-400 text-sm ml-2" data-i18n="preview-label">Aperçu en temps réel</span>
+            </div>
+
+            <!-- Contenu du devis (aperçu) -->
+            <div id="preview" class="p-8 text-[11px] leading-relaxed min-h-96">
+
+                <!-- En-tête devis -->
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <div class="font-black text-indigo-600 text-base mb-1" id="pv-your-name">Jean Dupont</div>
+                        <div class="text-slate-500" id="pv-your-status">Auto-entrepreneur</div>
+                        <div class="text-slate-500" id="pv-your-address">12 rue de la Paix, 75001 Paris</div>
+                        <div class="text-slate-500" id="pv-your-email">jean@email.com</div>
+                        <div class="text-slate-400 text-[10px]">SIRET : <span id="pv-your-siret">123 456 789 00010</span></div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-black text-slate-800" data-i18n="pv-title">DEVIS</div>
+                        <div class="text-slate-500" id="pv-quote-number">DEVIS-2025-001</div>
+                        <div class="text-slate-500" id="pv-quote-date">—</div>
+                        <div class="text-slate-400 text-[10px]"><span data-i18n="pv-validity">Valide</span> <span id="pv-validity-days">30</span> <span data-i18n="pv-validity-unit">jours</span></div>
+                    </div>
+                </div>
+
+                <!-- Séparateur coloré -->
+                <div class="h-1 w-full bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full mb-6"></div>
+
+                <!-- Bloc client -->
+                <div class="bg-slate-50 rounded-lg p-4 mb-6">
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wide mb-2" data-i18n="pv-client">Client</div>
+                    <div class="font-bold text-slate-800" id="pv-client-name">Acme Corp</div>
+                    <div class="text-slate-500" id="pv-client-contact">Marie Martin</div>
+                    <div class="text-slate-500" id="pv-client-address">45 avenue Victor Hugo, 69001 Lyon</div>
+                </div>
+
+                <!-- Tableau des prestations -->
+                <table class="w-full mb-4">
+                    <thead>
+                        <tr class="border-b-2 border-slate-800">
+                            <th class="text-left py-2 font-bold text-slate-800" data-i18n="pv-col-desc">Description</th>
+                            <th class="text-center py-2 font-bold text-slate-800 w-12" data-i18n="pv-col-qty">Qté</th>
+                            <th class="text-right py-2 font-bold text-slate-800 w-20" data-i18n="pv-col-price">P.U.</th>
+                            <th class="text-right py-2 font-bold text-slate-800 w-20" data-i18n="pv-col-total">Total HT</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pv-items">
+                        <tr class="border-b border-slate-100">
+                            <td class="py-2 text-slate-600" colspan="4">
+                                <em class="text-slate-300" data-i18n="pv-empty">Ajoutez vos prestations...</em>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Totaux -->
+                <div class="ml-auto max-w-xs space-y-1.5 mt-4">
+                    <div class="flex justify-between text-slate-500">
+                        <span data-i18n="pv-subtotal">Sous-total HT</span>
+                        <span id="pv-subtotal">0,00 €</span>
+                    </div>
+                    <div id="pv-tva-line" class="flex justify-between text-slate-500">
+                        <span id="pv-tva-label">TVA (20%)</span>
+                        <span id="pv-tva-amount">0,00 €</span>
+                    </div>
+                    <div class="flex justify-between font-black text-slate-800 border-t-2 border-slate-800 pt-2 text-sm">
+                        <span data-i18n="pv-total">TOTAL TTC</span>
+                        <span id="pv-total">0,00 €</span>
+                    </div>
+                </div>
+
+                <!-- Mention TVA non applicable -->
+                <div id="pv-tva-mention" class="mt-4 text-[10px] text-slate-400 italic" data-i18n="tva-mention">
+                    TVA non applicable, article 293 B du CGI
+                </div>
+
+                <!-- Conditions de paiement -->
+                <div class="mt-6 pt-4 border-t border-slate-100">
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wide mb-1" data-i18n="pv-payment">Conditions de paiement</div>
+                    <div id="pv-payment-terms" class="text-slate-500">Paiement à 30 jours par virement bancaire. Acompte de 30% à la commande.</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     CONTENU SEO
+     ====================================================== -->
+<div class="mt-14 space-y-10">
+
+    <div>
+        <h2 class="text-2xl font-bold text-slate-800 mb-5" data-i18n="seo-h2">
+            Comment faire un devis freelance professionnel ?
+        </h2>
+        <div class="bg-white rounded-2xl p-6 text-slate-600 leading-relaxed space-y-4 border border-slate-100">
+            <p data-i18n="seo-p1">Un <strong class="text-slate-800">devis professionnel</strong> protège le freelance et rassure le client. Il formalise la mission, le tarif et les conditions avant tout démarrage.</p>
+            <p data-i18n="seo-p2">Mention obligatoire : <strong class="text-slate-800">vos coordonnées complètes, votre SIRET, la description précise des prestations, les prix HT et TTC</strong>, la durée de validité et les conditions de règlement.</p>
+            <p data-i18n="seo-p3">En auto-entrepreneur, vous êtes exonéré de TVA sous le seuil de franchise (<strong class="text-slate-800">36 800€ pour les services</strong>). Ajoutez la mention légale "TVA non applicable, art. 293 B du CGI".</p>
+        </div>
+    </div>
+
+    <div>
+        <h3 class="text-xl font-bold text-slate-800 mb-4" data-i18n="faq-title">FAQ — Devis freelance</h3>
+        <div class="space-y-3">
+            <details class="group bg-white rounded-xl border border-slate-100 p-5 cursor-pointer">
+                <summary class="font-semibold text-slate-800 list-none flex justify-between items-center">
+                    <span data-i18n="faq1-q">Un devis est-il obligatoire pour un freelance ?</span>
+                    <span class="text-indigo-400 transition-transform group-open:rotate-180">▼</span>
+                </summary>
+                <p class="text-slate-600 text-sm mt-3" data-i18n="faq1-a">Pas légalement obligatoire dans tous les cas, mais fortement conseillé. Un devis signé vaut contrat et vous protège en cas de litige sur le périmètre ou le tarif.</p>
+            </details>
+            <details class="group bg-white rounded-xl border border-slate-100 p-5 cursor-pointer">
+                <summary class="font-semibold text-slate-800 list-none flex justify-between items-center">
+                    <span data-i18n="faq2-q">Quelle durée de validité pour un devis ?</span>
+                    <span class="text-indigo-400 transition-transform group-open:rotate-180">▼</span>
+                </summary>
+                <p class="text-slate-600 text-sm mt-3" data-i18n="faq2-a">30 jours est la durée standard. Au-delà, vous pouvez revoir vos tarifs ou votre planning. Mentionnez toujours la date de validité explicitement sur le document.</p>
+            </details>
+            <details class="group bg-white rounded-xl border border-slate-100 p-5 cursor-pointer">
+                <summary class="font-semibold text-slate-800 list-none flex justify-between items-center">
+                    <span data-i18n="faq3-q">Faut-il demander un acompte ?</span>
+                    <span class="text-indigo-400 transition-transform group-open:rotate-180">▼</span>
+                </summary>
+                <p class="text-slate-600 text-sm mt-3" data-i18n="faq3-a">Oui, systématiquement. 30 à 50% à la signature est la pratique courante. Cela filtre les clients peu sérieux et sécurise votre trésorerie.</p>
+            </details>
+        </div>
+    </div>
+</div>
+
+</main>
+
+
+<!-- ======================================================
+     FOOTER
+     ====================================================== -->
+<footer class="bg-white border-t border-slate-200 mt-16 py-10">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+        <div class="flex items-center justify-center gap-2 mb-3">
+            <span class="text-xl">⚡</span>
+            <span class="font-black text-indigo-600">FreelanceTools</span>
+        </div>
+        <p class="text-slate-500 text-sm" data-i18n="footer-text">Outils gratuits pour freelances — TJM, Devis, Contrats, Charges</p>
+        <p class="text-slate-400 text-xs mt-1" data-i18n="footer-disclaimer">Les résultats sont des estimations indicatives. Consultez un expert-comptable pour votre situation personnelle.</p>
+    </div>
+</footer>
+
+
+<!-- ======================================================
+     JAVASCRIPT
+     ====================================================== -->
+<script>
+
+// ─────────────────────────────────────────────────────────
+//  1. TRADUCTIONS
+// ─────────────────────────────────────────────────────────
+const i18n = {
+    fr: {
+        "nav-tjm": "Calcul TJM", "nav-quote": "Générateur devis",
+        "nav-contract": "Contrat", "nav-charges": "Calcul charges",
+        "badge": "📄 Générateur de devis PDF — 100% gratuit",
+        "hero-title": "Créez votre devis<br>en 2 minutes",
+        "hero-sub": "Remplissez le formulaire, prévisualisez en temps réel, téléchargez en PDF. Zéro inscription.",
+        "section-you": "Vos informations", "section-client": "Informations client",
+        "section-items": "Prestations", "section-options": "Options",
+        "your-name": "Prénom Nom / Société", "your-status": "Statut",
+        "your-email": "Email", "your-siret": "SIRET", "your-address": "Adresse",
+        "client-name": "Nom client / Société", "client-contact": "Contact",
+        "client-address": "Adresse client",
+        "col-description": "Description", "col-qty": "Qté",
+        "col-price": "Prix unit.", "col-total": "Total",
+        "quote-number": "N° de devis", "quote-date": "Date",
+        "quote-validity": "Validité (jours)", "tva-label": "TVA",
+        "tva-none": "Non assujetti (AE)", "tva-20": "TVA 20%", "tva-10": "TVA 10%",
+        "payment-terms": "Conditions de paiement",
+        "payment-placeholder": "Paiement à 30 jours par virement. Acompte de 30% à la commande.",
+        "add-item": "+ Ajouter une prestation",
+        "btn-pdf": "Télécharger le PDF",
+        "preview-label": "Aperçu en temps réel",
+        "pv-title": "DEVIS", "pv-client": "Client",
+        "pv-col-desc": "Description", "pv-col-qty": "Qté",
+        "pv-col-price": "P.U.", "pv-col-total": "Total HT",
+        "pv-empty": "Ajoutez vos prestations...",
+        "pv-subtotal": "Sous-total HT", "pv-total": "TOTAL TTC",
+        "pv-validity": "Valide", "pv-validity-unit": "jours",
+        "pv-payment": "Conditions de paiement",
+        "tva-mention": "TVA non applicable, article 293 B du CGI",
+        "seo-h2": "Comment faire un devis freelance professionnel ?",
+        "seo-p1": "Un <strong class='text-slate-800'>devis professionnel</strong> protège le freelance et rassure le client. Il formalise la mission, le tarif et les conditions avant tout démarrage.",
+        "seo-p2": "Mentions obligatoires : <strong class='text-slate-800'>coordonnées complètes, SIRET, description précise, prix HT et TTC</strong>, durée de validité et conditions de règlement.",
+        "seo-p3": "En auto-entrepreneur, vous êtes exonéré de TVA sous la franchise (<strong class='text-slate-800'>36 800€</strong>). Ajoutez la mention légale obligatoire.",
+        "faq-title": "FAQ — Devis freelance",
+        "faq1-q": "Un devis est-il obligatoire pour un freelance ?",
+        "faq1-a": "Pas légalement obligatoire dans tous les cas, mais fortement conseillé. Un devis signé vaut contrat et vous protège en cas de litige.",
+        "faq2-q": "Quelle durée de validité pour un devis ?",
+        "faq2-a": "30 jours est la durée standard. Mentionnez toujours la date de validité explicitement sur le document.",
+        "faq3-q": "Faut-il demander un acompte ?",
+        "faq3-a": "Oui, systématiquement. 30 à 50% à la signature est la pratique courante. Cela sécurise votre trésorerie.",
+        "footer-text": "Outils gratuits pour freelances — TJM, Devis, Contrats, Charges",
+        "footer-disclaimer": "Estimations indicatives. Consultez un expert-comptable.",
+    },
+    en: {
+        "nav-tjm": "Day Rate", "nav-quote": "Invoice Generator",
+        "nav-contract": "Contract", "nav-charges": "Tax Calculator",
+        "badge": "📄 Free PDF Invoice Generator",
+        "hero-title": "Create your invoice<br>in 2 minutes",
+        "hero-sub": "Fill in the form, preview in real time, download as PDF. No sign-up.",
+        "section-you": "Your details", "section-client": "Client details",
+        "section-items": "Services", "section-options": "Options",
+        "your-name": "Full name / Company", "your-status": "Legal structure",
+        "your-email": "Email", "your-siret": "Tax / Registration No.",
+        "your-address": "Address",
+        "client-name": "Client name / Company", "client-contact": "Contact person",
+        "client-address": "Client address",
+        "col-description": "Description", "col-qty": "Qty",
+        "col-price": "Unit price", "col-total": "Total",
+        "quote-number": "Invoice No.", "quote-date": "Date",
+        "quote-validity": "Valid for (days)", "tva-label": "VAT",
+        "tva-none": "No VAT (small business)", "tva-20": "VAT 20%", "tva-10": "VAT 10%",
+        "payment-terms": "Payment terms",
+        "payment-placeholder": "Payment within 30 days by bank transfer. 30% deposit on order.",
+        "add-item": "+ Add a service",
+        "btn-pdf": "Download PDF",
+        "preview-label": "Live preview",
+        "pv-title": "QUOTE", "pv-client": "Client",
+        "pv-col-desc": "Description", "pv-col-qty": "Qty",
+        "pv-col-price": "Unit", "pv-col-total": "Total",
+        "pv-empty": "Add your services...",
+        "pv-subtotal": "Subtotal", "pv-total": "GRAND TOTAL",
+        "pv-validity": "Valid for", "pv-validity-unit": "days",
+        "pv-payment": "Payment terms",
+        "tva-mention": "VAT not applicable (small business exemption)",
+        "seo-h2": "How to create a professional freelance invoice?",
+        "seo-p1": "A <strong class='text-slate-800'>professional invoice</strong> protects the freelancer and reassures the client. It formalises the scope, rate, and terms before any work begins.",
+        "seo-p2": "Required details: <strong class='text-slate-800'>full contact info, registration number, service description, prices with/without VAT</strong>, validity period, and payment terms.",
+        "seo-p3": "Freelancers below the VAT threshold are exempt. Still include the relevant legal mention on every invoice.",
+        "faq-title": "FAQ — Freelance invoices",
+        "faq1-q": "Is a written quote legally required?",
+        "faq1-a": "Not always, but highly recommended. A signed quote acts as a contract and protects you in case of dispute.",
+        "faq2-q": "How long should a quote be valid?",
+        "faq2-a": "30 days is standard. Always state the expiry date explicitly on the document.",
+        "faq3-q": "Should you ask for a deposit?",
+        "faq3-a": "Always. 30–50% upfront is common practice. It filters serious clients and protects your cash flow.",
+        "footer-text": "Free tools for freelancers — Day Rate, Invoices, Contracts, Taxes",
+        "footer-disclaimer": "Estimates for guidance only. Consult an accountant for your situation.",
+    }
+};
+
+let currentLang = 'fr';
+
+function toggleLang() {
+    currentLang = currentLang === 'fr' ? 'en' : 'fr';
+    applyTranslations();
+    updatePreview();
+}
+
+function applyTranslations() {
+    const t = i18n[currentLang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key] !== undefined) el.innerHTML = t[key];
+    });
+    document.querySelectorAll('[data-i18n-opt]').forEach(el => {
+        const key = el.getAttribute('data-i18n-opt');
+        if (t[key] !== undefined) el.textContent = t[key];
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (t[key] !== undefined) el.placeholder = t[key];
+    });
+    document.documentElement.lang = currentLang;
+    document.getElementById('lang-flag').textContent = currentLang === 'fr' ? '🇬🇧' : '🇫🇷';
+    document.getElementById('lang-label').textContent = currentLang === 'fr' ? 'EN' : 'FR';
+}
+
+
+// ─────────────────────────────────────────────────────────
+//  2. GESTION DES LIGNES DE PRESTATION
+// ─────────────────────────────────────────────────────────
+
+// Chaque ligne = { description, qty, price }
+let items = [
+    { description: '', qty: 1, price: 0 }
+];
+
+function renderItemsList() {
+    const container = document.getElementById('items-list');
+    container.innerHTML = '';
+
+    items.forEach((item, index) => {
+        const lineTotal = (item.qty * item.price).toFixed(2);
+        const row = document.createElement('div');
+        row.className = 'grid grid-cols-12 gap-2 items-center';
+        row.innerHTML = `
+            <input type="text" placeholder="Description de la prestation" value="${item.description}"
+                class="col-span-5 border-2 border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-400 transition"
+                oninput="items[${index}].description = this.value; updatePreview()">
+            <input type="number" value="${item.qty}" min="0.5" step="0.5"
+                class="col-span-2 border-2 border-slate-200 rounded-xl px-2 py-2 text-sm text-center focus:outline-none focus:border-indigo-400 transition"
+                oninput="items[${index}].qty = parseFloat(this.value)||0; updatePreview()">
+            <input type="number" value="${item.price}" min="0" step="10"
+                class="col-span-3 border-2 border-slate-200 rounded-xl px-2 py-2 text-sm text-center focus:outline-none focus:border-indigo-400 transition"
+                oninput="items[${index}].price = parseFloat(this.value)||0; updatePreview()">
+            <div class="col-span-1 text-right text-sm font-semibold text-slate-700">${lineTotal}€</div>
+            <button onclick="removeItem(${index})"
+                class="col-span-1 text-slate-300 hover:text-red-400 transition text-lg font-bold">×</button>
+        `;
+        container.appendChild(row);
+    });
+}
+
+function addItem() {
+    items.push({ description: '', qty: 1, price: 0 });
+    renderItemsList();
+    updatePreview();
+}
+
+function removeItem(index) {
+    if (items.length === 1) return; // Conserver au moins une ligne
+    items.splice(index, 1);
+    renderItemsList();
+    updatePreview();
+}
+
+
+// ─────────────────────────────────────────────────────────
+//  3. MISE À JOUR DE L'APERÇU EN TEMPS RÉEL
+// ─────────────────────────────────────────────────────────
+function updatePreview() {
+    // Infos freelance
+    setText('pv-your-name',    'your-name',    'Jean Dupont');
+    setText('pv-your-status',  'your-status',  'Auto-entrepreneur');
+    setText('pv-your-address', 'your-address', '12 rue de la Paix, 75001 Paris');
+    setText('pv-your-email',   'your-email',   'jean@email.com');
+    setText('pv-your-siret',   'your-siret',   '123 456 789 00010');
+
+    // Infos client
+    setText('pv-client-name',    'client-name',    'Nom du client');
+    setText('pv-client-contact', 'client-contact', '');
+    setText('pv-client-address', 'client-address', '');
+
+    // Infos devis
+    setText('pv-quote-number',  'quote-number', 'DEVIS-2025-001');
+    setText('pv-validity-days', 'quote-validity', '30');
+
+    // Date formatée
+    const dateInput = document.getElementById('quote-date').value;
+    document.getElementById('pv-quote-date').textContent =
+        dateInput ? new Date(dateInput).toLocaleDateString(currentLang === 'fr' ? 'fr-FR' : 'en-GB') : '—';
+
+    // Conditions de paiement
+    const paymentTerms = document.getElementById('payment-terms').value;
+    document.getElementById('pv-payment-terms').textContent =
+        paymentTerms || (currentLang === 'fr'
+            ? 'Paiement à 30 jours par virement bancaire. Acompte de 30% à la commande.'
+            : 'Payment within 30 days by bank transfer. 30% deposit on order.');
+
+    // Tableau des prestations
+    const tbody = document.getElementById('pv-items');
+    tbody.innerHTML = '';
+    let subtotal = 0;
+
+    if (items.some(it => it.description || it.price > 0)) {
+        items.forEach(item => {
+            if (!item.description && item.price === 0) return;
+            const lineTotal = item.qty * item.price;
+            subtotal += lineTotal;
+            const tr = document.createElement('tr');
+            tr.className = 'border-b border-slate-100';
+            tr.innerHTML = `
+                <td class="py-1.5 text-slate-700">${item.description || '—'}</td>
+                <td class="py-1.5 text-center text-slate-500">${item.qty}</td>
+                <td class="py-1.5 text-right text-slate-500">${formatEur(item.price)}</td>
+                <td class="py-1.5 text-right font-semibold text-slate-700">${formatEur(lineTotal)}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } else {
+        tbody.innerHTML = `<tr><td colspan="4" class="py-2 text-slate-300 italic text-center">
+            ${currentLang === 'fr' ? 'Ajoutez vos prestations...' : 'Add your services...'}</td></tr>`;
+    }
+
+    // Calcul TVA
+    const tvaRate = parseFloat(document.getElementById('tva-rate').value);
+    const tvaAmount = subtotal * tvaRate;
+    const total = subtotal + tvaAmount;
+
+    document.getElementById('pv-subtotal').textContent    = formatEur(subtotal);
+    document.getElementById('pv-tva-amount').textContent  = formatEur(tvaAmount);
+    document.getElementById('pv-total').textContent       = formatEur(total);
+
+    // Affichage conditionnel TVA
+    const tvaLine    = document.getElementById('pv-tva-line');
+    const tvaMention = document.getElementById('pv-tva-mention');
+    if (tvaRate === 0) {
+        tvaLine.style.display    = 'none';
+        tvaMention.style.display = 'block';
+    } else {
+        tvaLine.style.display    = 'flex';
+        tvaMention.style.display = 'none';
+        document.getElementById('pv-tva-label').textContent =
+            `TVA (${(tvaRate * 100).toFixed(0)}%)`;
+    }
+}
+
+// Utilitaire : copier la valeur d'un input dans un élément d'aperçu
+function setText(previewId, inputId, fallback) {
+    const val = document.getElementById(inputId)?.value;
+    document.getElementById(previewId).textContent = val || fallback;
+}
+
+// Utilitaire : formater un nombre en euros
+function formatEur(n) {
+    return n.toLocaleString(currentLang === 'fr' ? 'fr-FR' : 'en-GB',
+        { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+}
+
+
+// ─────────────────────────────────────────────────────────
+//  4. GÉNÉRATION DU PDF
+// ─────────────────────────────────────────────────────────
+function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+    // ── Couleurs et polices ──────────────────────────────
+    const INDIGO   = [79, 70, 229];
+    const DARK     = [30, 41, 59];
+    const GRAY     = [100, 116, 139];
+    const LIGHT    = [248, 250, 252];
+    const WHITE    = [255, 255, 255];
+
+    const pageW = 210;
+    const pageH = 297;
+    const margin = 15;
+    const col2 = pageW - margin;
+
+    // ── Lecture des données ──────────────────────────────
+    const yourName    = v('your-name')    || 'Jean Dupont';
+    const yourStatus  = v('your-status')  || '';
+    const yourAddress = v('your-address') || '';
+    const yourEmail   = v('your-email')   || '';
+    const yourSiret   = v('your-siret')   || '';
+    const clientName  = v('client-name')  || '';
+    const clientCont  = v('client-contact')  || '';
+    const clientAddr  = v('client-address')  || '';
+    const quoteNum    = v('quote-number') || 'DEVIS-2025-001';
+    const quoteDate   = document.getElementById('quote-date').value
+        ? new Date(document.getElementById('quote-date').value)
+              .toLocaleDateString(currentLang === 'fr' ? 'fr-FR' : 'en-GB') : '—';
+    const validity    = v('quote-validity') || '30';
+    const payTerms    = v('payment-terms')
+        || (currentLang === 'fr' ? 'Paiement à 30 jours par virement. Acompte 30%.'
+                                 : 'Payment within 30 days. 30% deposit on order.');
+    const tvaRate     = parseFloat(document.getElementById('tva-rate').value);
+
+    // ── Bandeau de titre (indigo) ────────────────────────
+    doc.setFillColor(...INDIGO);
+    doc.rect(0, 0, pageW, 28, 'F');
+
+    doc.setTextColor(...WHITE);
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.text('FreelanceTools', margin, 12);
+
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text('freelancetools.fr', margin, 19);
+
+    // Mot DEVIS / QUOTE
+    const titleWord = currentLang === 'fr' ? 'DEVIS' : 'QUOTE';
+    doc.setFontSize(22);
+    doc.setFont('helvetica', 'bold');
+    doc.text(titleWord, col2, 12, { align: 'right' });
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text(quoteNum, col2, 19, { align: 'right' });
+
+    // ── Infos freelance (colonne gauche) ─────────────────
+    let y = 38;
+    doc.setTextColor(...DARK);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text(yourName, margin, y);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(...GRAY);
+    y += 5;
+    if (yourStatus)  { doc.text(yourStatus, margin, y);  y += 4; }
+    if (yourAddress) { doc.text(yourAddress, margin, y); y += 4; }
+    if (yourEmail)   { doc.text(yourEmail, margin, y);   y += 4; }
+    if (yourSiret)   { doc.text(`SIRET : ${yourSiret}`, margin, y); }
+
+    // ── Date + validité (colonne droite) ──────────────────
+    doc.setTextColor(...GRAY);
+    doc.setFontSize(9);
+    doc.text(`Date : ${quoteDate}`, col2, 38, { align: 'right' });
+    doc.text(
+        (currentLang === 'fr' ? `Valide ${validity} jours` : `Valid for ${validity} days`),
+        col2, 43, { align: 'right' }
+    );
+
+    // ── Bloc client ───────────────────────────────────────
+    y = 70;
+    doc.setFillColor(...LIGHT);
+    doc.roundedRect(margin, y - 5, pageW - margin * 2, 28, 3, 3, 'F');
+
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...GRAY);
+    doc.text((currentLang === 'fr' ? 'CLIENT' : 'CLIENT'), margin + 4, y + 1);
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...DARK);
+    doc.text(clientName, margin + 4, y + 7);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(...GRAY);
+    if (clientCont) { doc.text(clientCont, margin + 4, y + 13); }
+    if (clientAddr) { doc.text(clientAddr, margin + 4, y + 18); }
+
+    // ── Tableau des prestations ───────────────────────────
+    y = 106;
+
+    // En-tête tableau
+    doc.setFillColor(...DARK);
+    doc.rect(margin, y - 5, pageW - margin * 2, 7, 'F');
+    doc.setTextColor(...WHITE);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'bold');
+    doc.text(currentLang === 'fr' ? 'DESCRIPTION' : 'DESCRIPTION', margin + 2, y - 0.5);
+    doc.text(currentLang === 'fr' ? 'QTÉ' : 'QTY',    130, y - 0.5, { align: 'center' });
+    doc.text(currentLang === 'fr' ? 'P.U. HT' : 'UNIT', 160, y - 0.5, { align: 'center' });
+    doc.text(currentLang === 'fr' ? 'TOTAL HT' : 'TOTAL', col2, y - 0.5, { align: 'right' });
+
+    // Lignes
+    let subtotal = 0;
+    doc.setTextColor(...DARK);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+
+    items.forEach((item, i) => {
+        if (!item.description && item.price === 0) return;
+        y += 8;
+        const lineTotal = item.qty * item.price;
+        subtotal += lineTotal;
+
+        // Fond alterné
+        if (i % 2 === 0) {
+            doc.setFillColor(...LIGHT);
+            doc.rect(margin, y - 5, pageW - margin * 2, 7, 'F');
+        }
+
+        doc.setTextColor(...DARK);
+        doc.text(item.description || '—', margin + 2, y - 0.5);
+        doc.text(String(item.qty), 130, y - 0.5, { align: 'center' });
+        doc.text(formatPDF(item.price), 160, y - 0.5, { align: 'center' });
+        doc.text(formatPDF(lineTotal), col2, y - 0.5, { align: 'right' });
+    });
+
+    // ── Totaux ────────────────────────────────────────────
+    y += 14;
+    const tvaAmount = subtotal * tvaRate;
+    const total     = subtotal + tvaAmount;
+
+    doc.setDrawColor(200, 210, 220);
+    doc.line(pageW / 2, y - 5, col2, y - 5);
+
+    doc.setFontSize(9);
+    doc.setTextColor(...GRAY);
+
+    doc.text(currentLang === 'fr' ? 'Sous-total HT' : 'Subtotal', pageW / 2, y);
+    doc.text(formatPDF(subtotal), col2, y, { align: 'right' });
+    y += 6;
+
+    if (tvaRate > 0) {
+        doc.text(`TVA (${(tvaRate * 100).toFixed(0)}%)`, pageW / 2, y);
+        doc.text(formatPDF(tvaAmount), col2, y, { align: 'right' });
+        y += 6;
+    }
+
+    // Total TTC (bandeau indigo)
+    doc.setFillColor(...INDIGO);
+    doc.rect(pageW / 2, y - 5, pageW / 2 - margin, 9, 'F');
+    doc.setTextColor(...WHITE);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text(currentLang === 'fr' ? 'TOTAL TTC' : 'GRAND TOTAL', pageW / 2 + 4, y + 1);
+    doc.text(formatPDF(total), col2, y + 1, { align: 'right' });
+
+    // ── Mention TVA si AE ─────────────────────────────────
+    if (tvaRate === 0) {
+        y += 14;
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'italic');
+        doc.setTextColor(...GRAY);
+        doc.text(
+            currentLang === 'fr'
+                ? 'TVA non applicable, article 293 B du CGI'
+                : 'VAT not applicable (small business exemption)',
+            margin, y
+        );
+    }
+
+    // ── Conditions de paiement ────────────────────────────
+    y += 16;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...GRAY);
+    doc.text(currentLang === 'fr' ? 'CONDITIONS DE PAIEMENT' : 'PAYMENT TERMS', margin, y);
+    y += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...DARK);
+    doc.setFontSize(9);
+    const splitTerms = doc.splitTextToSize(payTerms, pageW - margin * 2);
+    doc.text(splitTerms, margin, y);
+
+    // ── Pied de page ──────────────────────────────────────
+    doc.setFillColor(...INDIGO);
+    doc.rect(0, pageH - 12, pageW, 12, 'F');
+    doc.setTextColor(...WHITE);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Généré par FreelanceTools.fr — Outil 100% gratuit', pageW / 2, pageH - 5, { align: 'center' });
+
+    // ── Téléchargement ────────────────────────────────────
+    const filename = `${quoteNum || 'devis'}_${yourName.replace(/\s/g, '_')}.pdf`;
+    doc.save(filename);
+}
+
+// Utilitaires PDF
+function v(id) { return document.getElementById(id)?.value || ''; }
+function formatPDF(n) {
+    return n.toLocaleString(currentLang === 'fr' ? 'fr-FR' : 'en-GB',
+        { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+}
+
+
+// ─────────────────────────────────────────────────────────
+//  5. INITIALISATION
+// ─────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    // Date du jour par défaut
+    document.getElementById('quote-date').valueAsDate = new Date();
+    // Numéro de devis auto
+    const now = new Date();
+    document.getElementById('quote-number').value =
+        `DEVIS-${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}01`;
+    // Rendre les lignes de prestation et aperçu
+    renderItemsList();
+    updatePreview();
+});
+
+</script>
+</body>
+</html>

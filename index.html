@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculateur de Charges Freelance 2025 — AE, SASU, EURL | FreelanceTools</title>
+    <meta name="description" content="Calculez et comparez vos charges selon votre statut : auto-entrepreneur, SASU, EURL, libérale. Répartition détaillée et comparaison des 4 statuts. Gratuit.">
+    <link rel="alternate" hreflang="fr" href="[freelancetools.fr](https://freelancetools.fr/calcul-charges)">
+    <link rel="alternate" hreflang="en" href="[freelancetools.fr](https://freelancetools.fr/en/freelance-tax-calculator)">
+    <script src="[cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <script type="application/ld+json">
+    {
+        "@context": "[schema.org](https://schema.org)",
+        "@type": "WebApplication",
+        "name": "Calculateur de Charges Freelance",
+        "description": "Simulez et comparez vos charges selon votre statut juridique",
+        "url": "[freelancetools.fr](https://freelancetools.fr/calcul-charges)",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Any",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
+    }
+    </script>
+    <style>
+        .status-tab {
+            flex: 1; display: flex; flex-direction: column; align-items: center;
+            gap: 3px; padding: 12px 8px; font-size: 12px; font-weight: 600;
+            color: #64748b; border-bottom: 3px solid transparent;
+            cursor: pointer; transition: all 0.15s; background: white;
+        }
+        .status-tab:hover  { color: #4f46e5; background: #f5f3ff; }
+        .status-tab.active { color: #4f46e5; border-bottom-color: #4f46e5; background: #f5f3ff; }
+    </style>
+</head>
+
+<body class="bg-slate-50 min-h-screen font-sans">
+
+
+<!-- ======================================================
+     HEADER
+     ====================================================== -->
+<header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-2">
+            <span class="text-2xl">⚡</span>
+            <span class="text-xl font-black text-indigo-600">FreelanceTools</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-500">
+            <a href="index.html"   class="hover:text-slate-800 transition" data-i18n="nav-tjm">Calcul TJM</a>
+            <a href="devis.html"   class="hover:text-slate-800 transition" data-i18n="nav-quote">Générateur devis</a>
+            <a href="#"            class="hover:text-slate-800 transition" data-i18n="nav-contract">Contrat</a>
+            <a href="charges.html" class="text-indigo-600 border-b-2 border-indigo-600 pb-0.5" data-i18n="nav-charges">Calcul charges</a>
+        </nav>
+        <button onclick="toggleLang()"
+            class="flex items-center gap-2 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 px-3 py-2 rounded-lg text-sm font-semibold transition border border-transparent hover:border-indigo-200">
+            <span id="lang-flag">🇬🇧</span>
+            <span id="lang-label">EN</span>
+        </button>
+    </div>
+</header>
+
+
+<!-- ======================================================
+     HERO
+     ====================================================== -->
+<section class="bg-gradient-to-br from-indigo-600 via-indigo-500 to-violet-600 text-white py-14 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+        <div class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm px-4 py-1.5 rounded-full text-sm font-medium mb-5">
+            <span>📊</span>
+            <span data-i18n="badge">Simulation de charges — 4 statuts comparés</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-black mb-4 leading-tight" data-i18n="hero-title">
+            Calculez vos charges<br>selon votre statut
+        </h1>
+        <p class="text-indigo-100 text-lg max-w-xl mx-auto" data-i18n="hero-sub">
+            AE, EURL, SASU, libérale — visualisez ce que vous conservez pour chaque euro facturé.
+        </p>
+    </div>
+</section>
+
+
+<!-- ======================================================
+     MAIN
+     ====================================================== -->
+<main class="max-w-5xl mx-auto px-4 py-12 space-y-8">
+
+
+    <!-- ═══════════════════════════════════════════════
+         OUTIL PRINCIPAL
+         ═══════════════════════════════════════════════ -->
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
+
+        <!-- Onglets statuts -->
+        <div class="flex border-b border-slate-100">
+            <button class="status-tab active" data-status="ae"      onclick="selectStatus('ae')">
+                <span>🧾</span><span data-i18n="tab-ae">Auto-entrepreneur</span>
+            </button>
+            <button class="status-tab" data-status="liberal" onclick="selectStatus('liberal')">
+                <span>⚖️</span><span data-i18n="tab-liberal">Libérale / BNC</span>
+            </button>
+            <button class="status-tab" data-status="eurl" onclick="selectStatus('eurl')">
+                <span>🏢</span><span data-i18n="tab-eurl">EURL</span>
+            </button>
+            <button class="status-tab" data-status="sasu" onclick="selectStatus('sasu')">
+                <span>🏦</span><span data-i18n="tab-sasu">SASU</span>
+            </button>
+        </div>
+
+        <div class="p-6 md:p-8">
+
+            <!-- Saisie du CA -->
+            <div class="mb-8">
+                <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+                    <label class="text-sm font-semibold text-slate-700" data-i18n="label-ca">
+                        Chiffre d'affaires annuel (CA)
+                    </label>
+                    <div class="flex items-center gap-1.5">
+                        <input type="number" id="ca-input" value="60000" min="5000" max="300000" step="1000"
+                            class="w-32 border-2 border-slate-200 rounded-xl px-3 py-1.5 text-right font-black text-indigo-600 text-xl focus:outline-none focus:border-indigo-400 transition"
+                            oninput="syncSlider(this.value); calculate()">
+                        <span class="font-bold text-slate-400 text-lg">€</span>
+                    </div>
+                </div>
+                <input type="range" id="ca-slider" min="5000" max="300000" step="1000" value="60000"
+                    class="w-full accent-indigo-600 cursor-pointer"
+                    oninput="syncInput(this.value); calculate()">
+                <div class="flex justify-between text-xs text-slate-400 mt-1.5 px-0.5">
+                    <span>5k</span><span>50k</span><span>100k</span><span>200k</span><span>300k</span>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+
+                <!-- ── Résultats principaux ────────────────── -->
+                <div class="space-y-4">
+
+                    <!-- Net annuel -->
+                    <div class="bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl p-6 text-white text-center">
+                        <p class="text-indigo-100 text-sm mb-2" data-i18n="result-net-label">Revenu net annuel estimé</p>
+                        <div class="text-5xl font-black mb-1" id="result-net">—</div>
+                        <p class="text-indigo-200 text-sm">
+                            ≈ <span id="result-monthly" class="font-bold text-white">—</span>
+                            <span data-i18n="per-month">/mois</span>
+                        </p>
+                    </div>
+
+                    <!-- Taux charges / net -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-red-50 border border-red-100 rounded-xl p-4 text-center">
+                            <div class="text-3xl font-black text-red-500" id="result-charges-pct">—</div>
+                            <div class="text-xs text-red-400 mt-1 font-medium" data-i18n="charges-pct-label">de charges</div>
+                        </div>
+                        <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-4 text-center">
+                            <div class="text-3xl font-black text-emerald-600" id="result-net-pct">—</div>
+                            <div class="text-xs text-emerald-500 mt-1 font-medium" data-i18n="net-pct-label">conservé</div>
+                        </div>
+                    </div>
+
+                    <!-- Info statut -->
+                    <div id="status-info" class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 text-xs text-indigo-800 leading-relaxed"></div>
+                </div>
+
+                <!-- ── Répartition visuelle ────────────────── -->
+                <div>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3" data-i18n="breakdown-title">
+                        Répartition par euro facturé
+                    </h3>
+
+                    <!-- Barre proportionnelle empilée -->
+                    <div id="stacked-bar" class="flex rounded-xl overflow-hidden h-8 mb-5 bg-slate-100 shadow-inner"></div>
+
+                    <!-- Lignes de détail -->
+                    <div id="breakdown-items" class="space-y-2.5"></div>
+
+                    <!-- Note de calcul (hypothèses) -->
+                    <p id="calc-note" class="text-[11px] text-slate-400 italic mt-4 pt-3 border-t border-slate-100 leading-relaxed"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════════════
+         TABLEAU COMPARATIF
+         ═══════════════════════════════════════════════ -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-5">
+            <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <span>⚖️</span>
+                <span data-i18n="compare-title">Comparaison des 4 statuts</span>
+            </h2>
+            <!-- Toggle : inclure les dividendes dans le net -->
+            <label class="flex items-center gap-2 cursor-pointer bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 hover:bg-emerald-100 transition">
+                <input type="checkbox" id="toggle-dividends" onchange="calculate()"
+                    class="w-4 h-4 accent-indigo-600 cursor-pointer">
+                <span class="text-sm text-emerald-700 font-medium" data-i18n="toggle-div">+ Inclure les dividendes</span>
+            </label>
+        </div>
+        <div id="comparison-table" class="overflow-x-auto"></div>
+        <p class="text-xs text-slate-400 mt-3 italic" data-i18n="compare-note">
+            Hypothèses : AE versement libératoire, EURL rémunération 65% du CA, SASU salaire brut 50% du CA. Dividendes après PFU 30%.
+        </p>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════════════
+         SEUILS IMPORTANTS
+         ═══════════════════════════════════════════════ -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8">
+        <h2 class="text-xl font-bold text-slate-800 mb-5" data-i18n="thresholds-title">
+            Seuils importants à connaître
+        </h2>
+        <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4" id="thresholds-grid"></div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════════════
+         CONTENU SEO
+         ═══════════════════════════════════════════════ -->
+    <div class="space-y-8">
+
+        <div>
+            <h2 class="text-2xl font-bold text-slate-800 mb-5" data-i18n="seo-h2">
+                Comment sont calculées les charges freelance en France ?
+            </h2>
+            <div class="bg-white rounded-2xl p-6 text-slate-600 leading-relaxed space-y-4 border border-slate-100">
+                <p data-i18n="seo-p1">
+                    Les charges d'un freelance varient considérablement selon son statut. Un <strong class="text-slate-800">auto-entrepreneur</strong> paie environ 22% de cotisations sur son CA, tandis qu'un gérant de <strong class="text-slate-800">SASU</strong> peut supporter plus de 60% de charges sur sa rémunération brute.
+                </p>
+                <p data-i18n="seo-p2">
+                    Le choix du statut dépend du niveau de CA, des objectifs de retraite et de protection sociale, de la complexité administrative tolérée, et des perspectives de croissance — pas uniquement du taux de charges.
+                </p>
+                <p data-i18n="seo-p3">
+                    Ces simulations sont des <strong class="text-slate-800">estimations basées sur des taux moyens 2024-2025</strong>. La situation personnelle (revenus du foyer, situation familiale, frais réels) peut modifier significativement le montant d'impôt sur le revenu.
+                </p>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div>
+            <h3 class="text-xl font-bold text-slate-800 mb-4" data-i18n="faq-title">FAQ — Charges freelance</h3>
+            <div class="space-y-3">
+
+                <details class="group bg-white rounded-xl border border-slate-100 p-5 cursor-pointer">
+                    <summary class="font-semibold text-slate-800 list-none flex justify-between items-center">
+                        <span data-i18n="faq1-q">À partir de quel CA faut-il quitter l'auto-entreprise ?</span>
+                        <span class="text-indigo-400 transition-transform group-open:rotate-180">▼</span>
+                    </summary>
+                    <p class="text-slate-600 text-sm mt-3 leading-relaxed" data-i18n="faq1-a">
+                        Entre 50 000€ et 77 700€ de CA, il devient pertinent d'étudier le passage en EURL ou SASU. Au-delà du plafond AE (77 700€/an pour les services), le changement est obligatoire.
+                    </p>
+                </details>
+
+                <details class="group bg-white rounded-xl border border-slate-100 p-5 cursor-pointer">
+                    <summary class="font-semibold text-slate-800 list-none flex justify-between items-center">
+                        <span data-i18n="faq2-q">EURL ou SASU : quelle différence pour les charges ?</span>
+                        <span class="text-indigo-400 transition-transform group-open:rotate-180">▼</span>
+                    </summary>
+                    <p class="text-slate-600 text-sm mt-3 leading-relaxed" data-i18n="faq2-a">
+                        L'EURL (régime TNS) supporte ~43% de cotisations sur la rémunération nette. La SASU (assimilé salarié) applique ~65% de charges sur le salaire brut mais ouvre droit à une meilleure protection sociale (maladie, retraite, chômage sous conditions).
+                    </p>
+                </details>
+
+                <details class="group bg-white rounded-xl border border-slate-100 p-5 cursor-pointer">
+                    <summary class="font-semibold text-slate-800 list-none flex justify-between items-center">
+                        <span data-i18n="faq3-q">Les charges sociales sont-elles déductibles des impôts ?</span>
+                        <span class="text-indigo-400 transition-transform group-open:rotate-180">▼</span>
+                    </summary>
+                    <p class="text-slate-600 text-sm mt-3 leading-relaxed" data-i18n="faq3-a">
+                        En AE, non — le régime micro applique un abattement forfaitaire. En EURL/SASU, les charges sociales et frais réels sont déductibles du résultat avant calcul de l'impôt sur les sociétés (IS).
+                    </p>
+                </details>
+
+                <details class="group bg-white rounded-xl border border-slate-100 p-5 cursor-pointer">
+                    <summary class="font-semibold text-slate-800 list-none flex justify-between items-center">
+                        <span data-i18n="faq4-q">Qu'est-ce que la CFE et combien coûte-t-elle ?</span>
+                        <span class="text-indigo-400 transition-transform group-open:rotate-180">▼</span>
+                    </summary>
+                    <p class="text-slate-600 text-sm mt-3 leading-relaxed" data-i18n="faq4-a">
+                        La Cotisation Foncière des Entreprises est un impôt local payé par tous les indépendants. Elle varie selon la commune : en moyenne 200€ à 1 500€/an. Les AE en sont exonérés la première année d'activité.
+                    </p>
+                </details>
+
+            </div>
+        </div>
+    </div>
+
+</main>
+
+
+<!-- ======================================================
+     FOOTER
+     ====================================================== -->
+<footer class="bg-white border-t border-slate-200 mt-16 py-10">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+        <div class="flex items-center justify-center gap-2 mb-3">
+            <span class="text-xl">⚡</span>
+            <span class="font-black text-indigo-600">FreelanceTools</span>
+        </div>
+        <p class="text-slate-500 text-sm" data-i18n="footer-text">Outils gratuits pour freelances — TJM, Devis, Contrats, Charges</p>
+        <p class="text-slate-400 text-xs mt-1" data-i18n="footer-disclaimer">
+            Estimations indicatives 2024-2025. Consultez un expert-comptable pour votre situation personnelle.
+        </p>
+    </div>
+</footer>
+
+
+<!-- ======================================================
+     JAVASCRIPT
+     ====================================================== -->
+<script>
+
+// ─────────────────────────────────────────────────────────
+//  1. TRADUCTIONS
+// ─────────────────────────────────────────────────────────
+const i18n = {
+    fr: {
+        "nav-tjm": "Calcul TJM", "nav-quote": "Générateur devis",
+        "nav-contract": "Contrat", "nav-charges": "Calcul charges",
+        "badge":      "📊 Simulation de charges — 4 statuts comparés",
+        "hero-title": "Calculez vos charges<br>selon votre statut",
+        "hero-sub":   "AE, EURL, SASU, libérale — visualisez ce que vous conservez pour chaque euro facturé.",
+        "label-ca":            "Chiffre d'affaires annuel (CA)",
+        "result-net-label":    "Revenu net annuel estimé",
+        "per-month":           "/mois",
+        "charges-pct-label":   "de charges",
+        "net-pct-label":       "conservé",
+        "breakdown-title":     "Répartition par euro facturé",
+        "tab-ae":      "Auto-entrepreneur", "tab-liberal": "Libérale / BNC",
+        "tab-eurl":    "EURL",              "tab-sasu":    "SASU",
+        "compare-title": "Comparaison des 4 statuts",
+        "toggle-div":    "+ Inclure les dividendes",
+        "compare-note":  "Hypothèses : AE versement libératoire, EURL rémunération 65% du CA, SASU salaire brut 50% du CA. Dividendes après PFU 30%.",
+        "thresholds-title": "Seuils importants à connaître",
+        "seo-h2": "Comment sont calculées les charges freelance en France ?",
+        "seo-p1": "Les charges d'un freelance varient considérablement selon son statut. Un <strong class='text-slate-800'>auto-entrepreneur</strong> paie environ 22% de cotisations sur son CA, tandis qu'un gérant de <strong class='text-slate-800'>SASU</strong> peut supporter plus de 60% de charges sur sa rémunération brute.",
+        "seo-p2": "Le choix du statut dépend du niveau de CA, des objectifs de retraite et de protection sociale, de la complexité administrative tolérée, et des perspectives de croissance.",
+        "seo-p3": "Ces simulations sont des <strong class='text-slate-800'>estimations basées sur des taux moyens 2024-2025</strong>. La situation personnelle peut modifier significativement le montant d'impôt sur le revenu.",
+        "faq-title": "FAQ — Charges freelance",
+        "faq1-q": "À partir de quel CA faut-il quitter l'auto-entreprise ?",
+        "faq1-a": "Entre 50 000€ et 77 700€ de CA, il devient pertinent d'étudier le passage en EURL ou SASU. Au-delà du plafond AE (77 700€/an pour les services), le changement est obligatoire.",
+        "faq2-q": "EURL ou SASU : quelle différence pour les charges ?",
+        "faq2-a": "L'EURL (régime TNS) supporte ~43% de cotisations sur la rémunération nette. La SASU applique ~65% sur le brut mais offre une meilleure protection sociale.",
+        "faq3-q": "Les charges sociales sont-elles déductibles des impôts ?",
+        "faq3-a": "En AE, non — le régime micro applique un abattement forfaitaire. En EURL/SASU, les charges sociales et frais réels sont déductibles du résultat avant calcul de l'IS.",
+        "faq4-q": "Qu'est-ce que la CFE et combien coûte-t-elle ?",
+        "faq4-a": "La Cotisation Foncière des Entreprises est un impôt local payé par tous les indépendants. Elle varie selon la commune : en moyenne 200€ à 1 500€/an. Les AE en sont exonérés la première année.",
+        "footer-text":       "Outils gratuits pour freelances — TJM, Devis, Contrats, Charges",
+        "footer-disclaimer": "Estimations indicatives 2024-2025. Consultez un expert-comptable.",
+    },
+    en: {
+        "nav-tjm": "Day Rate", "nav-quote": "Invoice Generator",
+        "nav-contract": "Contract", "nav-charges": "Tax Calculator",
+        "badge":      "📊 Tax simulation — 4 structures compared",
+        "hero-title": "Calculate your taxes<br>by legal structure",
+        "hero-sub":   "Sole trader, LLC, limited co. — see exactly what you keep for every euro billed.",
+        "label-ca":           "Annual turnover (revenue)",
+        "result-net-label":   "Estimated annual net income",
+        "per-month":          "/month",
+        "charges-pct-label":  "taxes & charges",
+        "net-pct-label":      "kept (net)",
+        "breakdown-title":    "Breakdown per euro billed",
+        "tab-ae":     "Sole trader (AE)", "tab-liberal": "Liberal / BNC",
+        "tab-eurl":   "EURL (LLC)",       "tab-sasu":    "SASU (Ltd)",
+        "compare-title": "All 4 structures compared",
+        "toggle-div":    "+ Include dividends",
+        "compare-note":  "Assumptions: AE flat-rate tax, EURL remuneration = 65% revenue, SASU gross salary = 50% revenue. Dividends with 30% flat tax.",
+        "thresholds-title": "Key thresholds to know",
+        "seo-h2": "How are freelance taxes calculated in France?",
+        "seo-p1": "Taxes vary hugely by structure. A <strong class='text-slate-800'>sole trader (AE)</strong> pays about 22% in contributions on revenue, while a <strong class='text-slate-800'>SASU director</strong> can face over 60% charges on gross salary.",
+        "seo-p2": "The right structure depends on revenue level, retirement goals, administrative appetite, and growth prospects — not just the charge rate.",
+        "seo-p3": "These simulations are <strong class='text-slate-800'>estimates based on 2024-2025 average rates</strong>. Your personal situation will affect the exact income tax amount.",
+        "faq-title": "FAQ — Freelance taxes",
+        "faq1-q": "When should I switch from sole trader (AE)?",
+        "faq1-a": "Between €50,000 and €77,700 revenue, it's worth exploring an EURL or SASU. Above the AE cap (€77,700 for services), changing structure is mandatory.",
+        "faq2-q": "EURL vs SASU: what's the charge difference?",
+        "faq2-a": "EURL (self-employed manager) has ~43% charges on net pay. SASU (executive employee) has ~65% on gross, but provides better health and pension coverage.",
+        "faq3-q": "Are social contributions tax-deductible?",
+        "faq3-a": "For AE: no — a flat deduction applies instead. For EURL/SASU: social charges and real expenses are deductible before calculating corporate tax.",
+        "faq4-q": "What is CFE and how much does it cost?",
+        "faq4-a": "CFE is a local business tax paid by all self-employed. It ranges from ~€200 to €1,500/year depending on your municipality. AE are exempt in their first year.",
+        "footer-text":       "Free tools for freelancers — Day Rate, Invoices, Contracts, Taxes",
+        "footer-disclaimer": "Estimates for 2024-2025. Consult an accountant for your personal situation.",
+    }
+};
+
+
+// ─────────────────────────────────────────────────────────
+//  2. CONFIGURATION PAR STATUT
+//     Textes d'info et notes de calcul
+// ─────────────────────────────────────────────────────────
+const STATUS_CONFIG = {
+    ae: {
+        label: { fr: 'Auto-entrepreneur', en: 'Sole trader (AE)' },
+        info: {
+            fr: '✅ <strong>Avantages :</strong> Simple, 0 comptabilité, charges calculées sur le CA réel.<br>⚠️ <strong>Limites :</strong> Plafond CA 77 700 €/an (services), pas de déduction de frais réels, retraite limitée.',
+            en: '✅ <strong>Pros:</strong> Simple, minimal accounting, charges on actual revenue only.<br>⚠️ <strong>Limits:</strong> Revenue cap €77,700/year (services), no expense deduction, limited pension.'
+        },
+        note: {
+            fr: 'Taux appliqués : cotisations URSSAF 22% + versement libératoire IR 2,2% + CFE forfait ~300€/an (activité de prestations de service).',
+            en: 'Rates applied: URSSAF contributions 22% + flat-rate income tax 2.2% + estimated CFE ~€300/year (service activity).'
+        }
+    },
+    liberal: {
+        label: { fr: 'Profession libérale (BNC)', en: 'Liberal profession (BNC)' },
+        info: {
+            fr: '✅ <strong>Avantages :</strong> Protection sociale CIPAV, adapté aux professions réglementées.<br>⚠️ <strong>Limites :</strong> Charges plus élevées qu'en AE, comptabilité plus complexe.',
+            en: '✅ <strong>Pros:</strong> CIPAV pension, suited to regulated professions.<br>⚠️ <strong>Limits:</strong> Higher charges than AE, more complex accounting.'
+        },
+        note: {
+            fr: 'Estimé sur bénéfice après 10% de frais déductibles. URSSAF + CIPAV ≈ 35% du bénéfice. IR estimé à 15% du bénéfice (TMI variable selon situation).',
+            en: 'Estimated on profit after 10% deductible expenses. URSSAF + CIPAV ≈ 35% of profit. Income tax estimated at 15% of profit (marginal rate varies).'
+        }
+    },
+    eurl: {
+        label: { fr: 'EURL (gérant TNS)', en: 'EURL / LLC (manager)' },
+        info: {
+            fr: '✅ <strong>Avantages :</strong> Frais réels déductibles, IS réduit 15% jusqu\'à 42 500€, optimisation dividendes possible.<br>⚠️ <strong>Limites :</strong> Comptabilité obligatoire, cotisations TNS élevées.',
+            en: '✅ <strong>Pros:</strong> Real expenses deductible, 15% reduced corp. tax up to €42,500, dividend optimisation possible.<br>⚠️ <strong>Limits:</strong> Mandatory accounting, high self-employed contributions.'
+        },
+        note: {
+            fr: 'Hypothèse : rémunération gérant = 65% du CA. Cotisations TNS ≈ 43% de la rémunération nette. IS calculé sur le bénéfice restant (15% jusqu\'à 42 500€, 25% au-delà).',
+            en: 'Assumption: manager pay = 65% of revenue. TNS contributions ≈ 43% of net pay. Corporate tax on remaining profit (15% up to €42,500, 25% above).'
+        }
+    },
+    sasu: {
+        label: { fr: 'SASU (assimilé salarié)', en: 'SASU / Ltd (executive)' },
+        info: {
+            fr: '✅ <strong>Avantages :</strong> Meilleure protection sociale (maladie, retraite, chômage*), crédibilité client.<br>⚠️ <strong>Limites :</strong> Charges salariales très élevées (~65% du brut), comptabilité obligatoire.',
+            en: '✅ <strong>Pros:</strong> Better social cover (health, pension, unemployment*), client credibility.<br>⚠️ <strong>Limits:</strong> Very high payroll charges (~65% of gross), mandatory accounting.'
+        },
+        note: {
+            fr: 'Hypothèse : salaire brut = 50% du CA. Charges salariales ≈ 23% du brut, patronales ≈ 42% du brut. IS calculé sur le bénéfice après rémunération (hors dividendes).',
+            en: 'Assumption: gross salary = 50% of revenue. Employee contributions ≈ 23% of gross, employer ≈ 42%. Corporate tax on remaining profit after salary (dividends excluded).'
+        }
+    }
+};
+
+// Palette de couleurs pour les segments de charges
+const COLORS = {
+    net:          '#10b981',  // vert
+    cotisations:  '#ef4444',  // rouge
+    chargesSal:   '#ec4899',  // rose
+    chargesPat:   '#f43f5e',  // rose-rouge
+    ir:           '#f97316',  // orange
+    is:           '#8b5cf6',  // violet
+    cfe:          '#f59e0b',  // amber
+    reserve:      '#94a3b8',  // slate (trésorerie société)
+};
+
+// Fond clair associé à chaque couleur
+const LIGHT = {
+    '#10b981': '#d1fae5', '#ef4444': '#fee2e2', '#ec4899': '#fce7f3',
+    '#f43f5e': '#ffe4e6', '#f97316': '#ffedd5', '#8b5cf6': '#ede9fe',
+    '#f59e0b': '#fef3c7', '#94a3b8': '#f1f5f9',
+};
+
+
+// ─────────────────────────────────────────────────────────
+//  3. CALCUL DES CHARGES PAR STATUT
+//     Retourne : net, total charges, réserve, dividendes, items
+// ─────────────────────────────────────────────────────────
+function computeCharges(ca, status) {
+
+    if (status === 'ae') {
+        const cotisations = ca * 0.22;
+        const irLib       = ca * 0.022;
+        const cfe         = 300;
+        return {
+            net: ca - cotisations - irLib - cfe,
+            total: cotisations + irLib + cfe,
+            reserve: 0, dividends: 0,
+            items: [
+                { key: 'cotisations', label: { fr: 'Cotisations sociales URSSAF', en: 'URSSAF social contributions' }, amount: cotisations, color: COLORS.cotisations },
+                { key: 'ir',          label: { fr: 'Impôt sur le revenu (lib.)',  en: 'Flat-rate income tax' },        amount: irLib,       color: COLORS.ir },
+                { key: 'cfe',         label: { fr: 'CFE (estimée)',               en: 'CFE local tax (est.)' },         amount: cfe,         color: COLORS.cfe },
+            ]
+        };
+    }
+
+    if (status === 'liberal') {
+        const benefice    = ca * 0.90; // après 10% frais déductibles estimés
+        const cotisations = benefice * 0.35;
+        const ir          = benefice * 0.15;
+        const cfe         = 400;
+        return {
+            net: Math.max(0, ca - cotisations - ir - cfe),
+            total: cotisations + ir + cfe,
+            reserve: 0, dividends: 0,
+            items: [
+                { key: 'cotisations', label: { fr: 'Cotisations URSSAF + CIPAV',     en: 'URSSAF + CIPAV contributions' }, amount: cotisations, color: COLORS.cotisations },
+                { key: 'ir',          label: { fr: 'Impôt sur le revenu (estimé)',   en: 'Income tax (estimated)' },       amount: ir,          color: COLORS.ir },
+                { key: 'cfe',         label: { fr: 'CFE (estimée)',                  en: 'CFE local tax (est.)' },          amount: cfe,         color: COLORS.cfe },
+            ]
+        };
+    }
+
+    if (status === 'eurl') {
+        const remNette = ca * 0.65;
+        const cotTNS   = remNette * 0.43;
+        const remBrute = remNette + cotTNS;
+        const cfe      = 500;
+        const benefice = Math.max(0, ca - remBrute - cfe);
+        // IS : 15% jusqu'à 42 500€, 25% au-delà
+        const is       = Math.min(benefice, 42500) * 0.15 + Math.max(0, benefice - 42500) * 0.25;
+        const reserve  = Math.max(0, benefice - is);
+        return {
+            net: remNette,
+            total: cotTNS + is + cfe,
+            reserve,
+            dividends: reserve * 0.70, // après PFU 30%
+            items: [
+                { key: 'cotisations', label: { fr: 'Cotisations sociales TNS',    en: 'Self-employed contributions' },   amount: cotTNS,  color: COLORS.cotisations },
+                { key: 'is',          label: { fr: 'Impôt sur les sociétés (IS)', en: 'Corporate tax (IS)' },            amount: is,      color: COLORS.is },
+                { key: 'cfe',         label: { fr: 'CFE (estimée)',               en: 'CFE local tax (est.)' },           amount: cfe,     color: COLORS.cfe },
+                { key: 'reserve',     label: { fr: 'Trésorerie société',          en: 'Company cash (dividendable)' },    amount: reserve, color: COLORS.reserve, isReserve: true },
+            ]
+        };
+    }
+
+    if (status === 'sasu') {
+        const brut       = ca * 0.50;
+        const chargesSal = brut * 0.23; // cotisations salariales
+        const chargesPat = brut * 0.42; // cotisations patronales
+        const netSal     = brut - chargesSal;
+        const cfe        = 500;
+        const benefice   = Math.max(0, ca - brut - chargesPat - cfe);
+        const is         = Math.min(benefice, 42500) * 0.15 + Math.max(0, benefice - 42500) * 0.25;
+        const reserve    = Math.max(0, benefice - is);
+        return {
+            net: netSal,
+            total: chargesSal + chargesPat + is + cfe,
+            reserve,
+            dividends: reserve * 0.70,
+            items: [
+                { key: 'chargesSal',  label: { fr: 'Charges salariales',          en: 'Employee contributions' },        amount: chargesSal, color: COLORS.chargesSal },
+                { key: 'chargesPat',  label: { fr: 'Charges patronales',          en: 'Employer contributions' },         amount: chargesPat, color: COLORS.chargesPat },
+                { key: 'is',          label: { fr: 'Impôt sur les sociétés (IS)', en: 'Corporate tax (IS)' },             amount: is,         color: COLORS.is },
+                { key: 'cfe',         label: { fr: 'CFE (estimée)',               en: 'CFE local tax (est.)' },            amount: cfe,        color: COLORS.cfe },
+                { key: 'reserve',     label: { fr: 'Trésorerie société',          en: 'Company cash (dividendable)' },     amount: reserve,    color: COLORS.reserve, isReserve: true },
+            ]
+        };
+    }
+}
+
+
+// ─────────────────────────────────────────────────────────
+//  4. ÉTAT GLOBAL
+// ─────────────────────────────────────────────────────────
+let currentStatus = 'ae';
+let currentLang   = 'fr';
+
+
+// ─────────────────────────────────────────────────────────
+//  5. CALCUL PRINCIPAL + MISE À JOUR DE L'INTERFACE
+// ─────────────────────────────────────────────────────────
+function calculate() {
+    const ca               = parseInt(document.getElementById('ca-input').value) || 60000;
+    const r                = computeCharges(ca, currentStatus);
+    const includeDividends = document.getElementById('toggle-dividends').checked;
+
+    // Net affiché : salaire net seul, ou + dividendes si toggle activé
+    const netDisplay = (includeDividends && r.dividends > 0) ? r.net + r.dividends : r.net;
+
+    // ── Résultats principaux ──────────────────────────────
+    document.getElementById('result-net').textContent         = fmt(netDisplay);
+    document.getElementById('result-monthly').textContent     = fmt(netDisplay / 12);
+    document.getElementById('result-charges-pct').textContent = Math.round(r.total / ca * 100) + '%';
+    document.getElementById('result-net-pct').textContent     = Math.round(netDisplay / ca * 100) + '%';
+
+    // ── Info statut ───────────────────────────────────────
+    document.getElementById('status-info').innerHTML = STATUS_CONFIG[currentStatus].info[currentLang];
+
+    // ── Barre proportionnelle ─────────────────────────────
+    // Ordre : net (vert) en premier, puis charges, puis réserve (grisé)
+    const bar = document.getElementById('stacked-bar');
+    bar.innerHTML = '';
+    const barItems = [
+        { amount: r.net, color: COLORS.net, opacity: 1 },
+        ...r.items.map(it => ({ amount: it.amount, color: it.color, opacity: it.isReserve ? 0.4 : 1 }))
+    ];
+    barItems.forEach(seg => {
+        if (seg.amount <= 0) return;
+        const pct = (seg.amount / ca * 100).toFixed(1);
+        const el  = document.createElement('div');
+        el.style.cssText = `width:${pct}%; background:${seg.color}; opacity:${seg.opacity};`;
+        el.title = `${fmt(seg.amount)} (${pct}%)`;
+        bar.appendChild(el);
+    });
+
+    // ── Lignes de détail ──────────────────────────────────
+    const container = document.getElementById('breakdown-items');
+    container.innerHTML = '';
+
+    // Ligne "net" en premier (toujours)
+    addRow(container, {
+        label:  currentLang === 'fr' ? '💰 Revenu net (en poche)' : '💰 Net income (take-home)',
+        amount: r.net,
+        pct:    r.net / ca * 100,
+        color:  COLORS.net,
+        bold:   true
+    });
+
+    // Lignes charges
+    r.items.forEach(item => {
+        if (item.amount <= 0) return;
+        addRow(container, {
+            label:  item.label[currentLang],
+            amount: item.amount,
+            pct:    item.amount / ca * 100,
+            color:  item.color,
+            faded:  item.isReserve
+        });
+    });
+
+    // Note de calcul
+    document.getElementById('calc-note').textContent = STATUS_CONFIG[currentStatus].note[currentLang];
+
+    // ── Tableau comparatif ────────────────────────────────
+    renderComparison(ca, includeDividends);
+
+    // ── Seuils ───────────────────────────────────────────
+    renderThresholds(ca);
+}
+
+// Ajoute une ligne de détail avec barre de progression
+function addRow(container, { label, amount, pct, color, bold, faded }) {
+    const el = document.createElement('div');
+    el.className  = 'flex items-center gap-3';
+    el.style.opacity = faded ? '0.55' : '1';
+    el.innerHTML = `
+        <div style="width:10px;height:10px;border-radius:3px;flex-shrink:0;
+            ${faded ? `border:2px dashed ${color};background:transparent` : `background:${color}`}"></div>
+        <div class="flex-1">
+            <div class="flex justify-between items-center mb-0.5">
+                <span class="text-sm ${bold ? 'font-bold text-slate-800' : 'text-slate-600'}">${label}</span>
+                <span class="text-sm font-bold" style="color:${color}">${fmt(amount)}</span>
+            </div>
+            <div class="h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                <div style="width:${pct.toFixed(1)}%;height:100%;background:${color};border-radius:50px"></div>
+            </div>
+        </div>
+        <span class="text-xs text-slate-400 w-10 text-right">${pct.toFixed(0)}%</span>
+    `;
+    container.appendChild(el);
+}
+
+
+// ─────────────────────────────────────────────────────────
+//  6. TABLEAU COMPARATIF
+// ─────────────────────────────────────────────────────────
+function renderComparison(ca, includeDividends) {
+    const statuses = ['ae', 'liberal', 'eurl', 'sasu'];
+    const isFr     = currentLang === 'fr';
+
+    // En-tête
+    let html = `
+        <table class="w-full text-sm border-collapse">
+        <thead>
+            <tr class="bg-slate-50 border-b-2 border-slate-200">
+                <th class="text-left py-3 px-4 font-semibold text-slate-500">
+                    ${isFr ? 'Statut' : 'Structure'}</th>
+                <th class="text-right py-3 px-4 font-semibold text-slate-500">
+                    ${isFr ? 'Charges totales' : 'Total taxes'}</th>
+                <th class="text-right py-3 px-4 font-semibold text-slate-500">
+                    ${isFr ? 'Taux effectif' : 'Effective rate'}</th>
+                <th class="text-right py-3 px-4 font-semibold text-slate-500">
+                    ${isFr ? 'Net annuel' : 'Annual net'}</th>
+                <th class="text-right py-3 px-4 font-semibold text-slate-500">
+                    ${isFr ? '/mois' : '/month'}</th>
+            </tr>
+        </thead>
+        <tbody>
+    `;
+
+    statuses.forEach(s => {
+        const r          = computeCharges(ca, s);
+        const netDisplay = (includeDividends && r.dividends > 0) ? r.net + r.dividends : r.net;
+        const isActive   = s === currentStatus;
+        const chargesPct = Math.round(r.total / ca * 100);
+        const netPct     = Math.round(netDisplay / ca * 100);
+
+        // Alerte si AE au-dessus du plafond
+        const aboveCap   = s === 'ae' && ca > 77700;
+        const capBadge   = aboveCap
+            ? `<span class="ml-1 text-[10px] bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full">${isFr ? '⚠️ plafond dépassé' : '⚠️ above cap'}</span>`
+            : '';
+
+        // Badge dividendes si toggle actif
+        const divBadge = (includeDividends && r.dividends > 0)
+            ? `<span class="ml-1 text-[10px] bg-emerald-100 text-emerald-600 px-1.5 py-0.5 rounded-full">+ div.</span>`
+            : '';
+
+        // Couleur du taux effectif
+        const rateColor = chargesPct < 30 ? 'bg-green-100 text-green-700'
+                        : chargesPct < 50 ? 'bg-amber-100 text-amber-700'
+                        :                   'bg-red-100   text-red-600';
+
+        html += `
+            <tr class="${isActive ? 'bg-indigo-50' : 'hover:bg-slate-50'} border-b border-slate-100 transition cursor-pointer"
+                onclick="selectStatus('${s}')">
+                <td class="py-3 px-4">
+                    <div class="flex flex-wrap items-center gap-1">
+                        <span class="w-2 h-2 rounded-full flex-shrink-0 ${isActive ? 'bg-indigo-500' : 'bg-slate-200'}"></span>
+                        <span class="${isActive ? 'font-bold text-indigo-700' : 'text-slate-700'}">
+                            ${STATUS_CONFIG[s].label[currentLang]}
+                        </span>
+                        ${capBadge}${divBadge}
+                    </div>
+                </td>
+                <td class="py-3 px-4 text-right text-red-500 font-medium">${fmt(r.total)}</td>
+                <td class="py-3 px-4 text-right">
+                    <span class="inline-block px-2 py-0.5 rounded-full text-xs font-bold ${rateColor}">
+                        ${chargesPct}%
+                    </span>
+                </td>
+                <td class="py-3 px-4 text-right font-bold ${isActive ? 'text-indigo-700' : 'text-slate-800'}">
+                    ${fmt(netDisplay)}
+                </td>
+                <td class="py-3 px-4 text-right text-slate-500">${fmt(netDisplay / 12)}</td>
+            </tr>
+        `;
+    });
+
+    html += '</tbody></table>';
+    document.getElementById('comparison-table').innerHTML = html;
+}
+
+
+// ─────────────────────────────────────────────────────────
+//  7. GRILLE DES SEUILS IMPORTANTS
+// ─────────────────────────────────────────────────────────
+function renderThresholds(ca) {
+    const isFr = currentLang === 'fr';
+
+    const thresholds = [
+        {
+            amount: 36800,
+            title:  isFr ? 'Franchise TVA — Services'     : 'VAT exemption — Services',
+            desc:   isFr ? 'En-dessous : TVA non applicable (AE & micro)' : 'Below: VAT not applicable',
+        },
+        {
+            amount: 77700,
+            title:  isFr ? 'Plafond AE — Services / BNC'  : 'Sole trader cap — Services',
+            desc:   isFr ? 'Au-delà : changement de statut obligatoire'   : 'Above: must change structure',
+        },
+        {
+            amount: 42500,
+            title:  isFr ? 'IS réduit à 15%'              : 'Reduced corp. tax (15%)',
+            desc:   isFr ? 'Bénéfice EURL/SASU sous ce seuil'             : 'EURL/SASU profit below this',
+        },
+        {
+            amount: 50000,
+            title:  isFr ? 'Seuil de réflexion AE → société' : 'AE → company switch zone',
+            desc:   isFr ? 'L\'EURL commence à devenir plus avantageuse'  : 'LLC often becomes more advantageous',
+        },
+        {
+            amount: 39100,
+            title:  isFr ? 'Seuil majoré franchise TVA'   : 'Upper VAT exemption threshold',
+            desc:   isFr ? 'Tolérance avant réassujettissement TVA'       : 'Tolerance before VAT kicks in',
+        },
+        {
+            amount: 188700,
+            title:  isFr ? 'Plafond AE — Vente marchandises' : 'Sole trader cap — Sales',
+            desc:   isFr ? 'Plafond pour les activités commerciales'      : 'Cap for commercial activities',
+        },
+    ];
+
+    const grid = document.getElementById('thresholds-grid');
+    grid.innerHTML = thresholds.map(th => {
+        // Couleur selon position du CA par rapport au seuil
+        const diff  = ca - th.amount;
+        const isAbove  = diff > 0;
+        const isClose  = !isAbove && diff > -10000; // dans les 10k en-dessous
+
+        let border, bg, badge, badgeColor;
+        if (th.amount === 42500) {
+            // Seuil IS : neutre (il s'applique au bénéfice pas au CA)
+            border = '#e2e8f0'; bg = '#f8fafc'; badge = ''; badgeColor = '';
+        } else if (isAbove) {
+            border = '#fca5a5'; bg = '#fef2f2'; badgeColor = '#dc2626';
+            badge  = isFr ? '🔴 dépassé' : '🔴 exceeded';
+        } else if (isClose) {
+            border = '#fde68a'; bg = '#fffbeb'; badgeColor = '#d97706';
+            badge  = isFr ? '⚠️ proche' : '⚠️ close';
+        } else {
+            border = '#e2e8f0'; bg = '#f8fafc'; badgeColor = '#22c55e';
+            badge  = isFr ? '✅ en dessous' : '✅ below';
+        }
+
+        const diff2 = Math.abs(diff);
+        const diffText = diff === 0 ? '' : `${isAbove ? '+' : '-'}${fmt(diff2)} ${isFr ? (isAbove ? 'au-dessus' : 'en-dessous') : (isAbove ? 'above' : 'below')}`;
+
+        return `
+            <div class="rounded-xl p-4 border" style="background:${bg};border-color:${border}">
+                <div class="flex justify-between items-start mb-2 gap-2">
+                    <span class="text-xs font-bold text-slate-600 leading-tight">${th.title}</span>
+                    ${badge ? `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0 text-white" style="background:${badgeColor}">${badge}</span>` : ''}
+                </div>
+                <div class="text-xl font-black text-slate-800 mb-1">${fmt(th.amount)}</div>
+                <div class="text-xs text-slate-500">${th.desc}</div>
+                ${diffText ? `<div class="text-[11px] font-semibold mt-1.5" style="color:${badgeColor}">${diffText}</div>` : ''}
+            </div>
+        `;
+    }).join('');
+}
+
+
+// ─────────────────────────────────────────────────────────
+//  8. SÉLECTION D'UN STATUT
+// ─────────────────────────────────────────────────────────
+function selectStatus(status) {
+    currentStatus = status;
+    document.querySelectorAll('.status-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.status === status);
+    });
+    calculate();
+}
+
+
+// ─────────────────────────────────────────────────────────
+//  9. SYNCHRONISATION SLIDER ↔ INPUT
+// ─────────────────────────────────────────────────────────
+function syncSlider(val) { document.getElementById('ca-slider').value = val; }
+function syncInput(val)  { document.getElementById('ca-input').value  = val; }
+
+
+// ─────────────────────────────────────────────────────────
+//  10. GESTION DE LA LANGUE
+// ─────────────────────────────────────────────────────────
+function toggleLang() {
+    currentLang = currentLang === 'fr' ? 'en' : 'fr';
+    const t = i18n[currentLang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key] !== undefined) el.innerHTML = t[key];
+    });
+    document.documentElement.lang = currentLang;
+    document.getElementById('lang-flag').textContent = currentLang === 'fr' ? '🇬🇧' : '🇫🇷';
+    document.getElementById('lang-label').textContent = currentLang === 'fr' ? 'EN' : 'FR';
+    calculate();
+}
+
+
+// ─────────────────────────────────────────────────────────
+//  11. UTILITAIRE : FORMAT EUROS
+// ─────────────────────────────────────────────────────────
+function fmt(n) {
+    return Math.round(n).toLocaleString(currentLang === 'fr' ? 'fr-FR' : 'en-GB') + ' €';
+}
+
+
+// ─────────────────────────────────────────────────────────
+//  12. INITIALISATION
+// ─────────────────────────────────────────────────────────
+calculate();
+
+</script>
+</body>
+</html>

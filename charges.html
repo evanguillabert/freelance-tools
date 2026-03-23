@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculateur TJM Freelance — Outil gratuit | FreelanceTools</title>
+    <meta name="description" content="Calculez votre TJM (Taux Journalier Moyen) gratuitement. Estimez votre tarif journalier selon votre statut et vos objectifs de revenus.">
+
+    <!-- SEO multi-langue : indique à Google les versions par langue -->
+    <link rel="alternate" hreflang="fr" href="[freelancetools.fr](https://freelancetools.fr/calculateur-tjm)">
+    <link rel="alternate" hreflang="en" href="[freelancetools.fr](https://freelancetools.fr/en/day-rate-calculator)">
+
+    <!-- Tailwind CSS CDN : pas besoin d'installer quoi que ce soit -->
+    <script src="[cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+
+    <!-- Schema.org : aide Google à comprendre que c'est un outil web gratuit -->
+    <script type="application/ld+json">
+    {
+        "@context": "[schema.org](https://schema.org)",
+        "@type": "WebApplication",
+        "name": "Calculateur TJM Freelance",
+        "description": "Calculez votre taux journalier moyen gratuitement",
+        "url": "[freelancetools.fr](https://freelancetools.fr/calculateur-tjm)",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Any",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
+    }
+    </script>
+</head>
+
+<body class="bg-slate-50 min-h-screen font-sans">
+
+
+<!-- ======================================================
+     HEADER
+     ====================================================== -->
+<header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+
+        <!-- Logo -->
+        <a href="/" class="flex items-center gap-2">
+            <span class="text-2xl">⚡</span>
+            <span class="text-xl font-black text-indigo-600">FreelanceTools</span>
+        </a>
+
+        <!-- Navigation principale -->
+        <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-500">
+            <a href="#" class="text-indigo-600 border-b-2 border-indigo-600 pb-0.5" data-i18n="nav-tjm">Calcul TJM</a>
+            <a href="#" class="hover:text-slate-800 transition" data-i18n="nav-quote">Générateur devis</a>
+            <a href="#" class="hover:text-slate-800 transition" data-i18n="nav-contract">Contrat</a>
+            <a href="#" class="hover:text-slate-800 transition" data-i18n="nav-charges">Calcul charges</a>
+        </nav>
+
+        <!-- Bouton toggle de langue -->
+        <button
+            onclick="toggleLang()"
+            class="flex items-center gap-2 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 px-3 py-2 rounded-lg text-sm font-semibold transition border border-transparent hover:border-indigo-200">
+            <span id="lang-flag">🇬🇧</span>
+            <span id="lang-label">EN</span>
+        </button>
+    </div>
+</header>
+
+
+<!-- ======================================================
+     HERO
+     ====================================================== -->
+<section class="bg-gradient-to-br from-indigo-600 via-indigo-500 to-violet-600 text-white py-14 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+
+        <div class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm px-4 py-1.5 rounded-full text-sm font-medium mb-5">
+            <span>✨</span>
+            <span data-i18n="badge">Outil 100% gratuit — aucune inscription</span>
+        </div>
+
+        <h1 class="text-4xl md:text-5xl font-black mb-4 leading-tight" data-i18n="hero-title">
+            Calculez votre TJM<br>en 30 secondes
+        </h1>
+
+        <p class="text-indigo-100 text-lg max-w-xl mx-auto" data-i18n="hero-sub">
+            Trouvez le taux journalier idéal selon votre statut, vos charges et votre objectif de revenu net.
+        </p>
+    </div>
+</section>
+
+
+<!-- ======================================================
+     CALCULATEUR TJM
+     ====================================================== -->
+<main class="max-w-5xl mx-auto px-4 py-12">
+
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
+
+        <div class="px-8 pt-8 pb-4">
+            <h2 class="text-xl font-bold text-slate-800" data-i18n="calc-title">Simulateur de TJM</h2>
+        </div>
+
+        <div class="p-8 pt-4 grid md:grid-cols-2 gap-10">
+
+
+            <!-- ===== INPUTS (colonne gauche) ===== -->
+            <div class="space-y-7">
+
+                <!-- 1. Revenu net cible -->
+                <div>
+                    <label for="salary" class="block text-sm font-semibold text-slate-700 mb-1.5" data-i18n="label-salary">
+                        Revenu net annuel cible (€)
+                    </label>
+                    <div class="relative">
+                        <input
+                            type="number"
+                            id="salary"
+                            value="40000"
+                            min="1000"
+                            max="500000"
+                            class="w-full border-2 border-slate-200 rounded-xl px-4 py-3 pr-8 text-slate-800 font-semibold text-lg focus:outline-none focus:border-indigo-400 transition"
+                            oninput="calculate()">
+                        <span class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">€</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-1.5" data-i18n="hint-salary">Ce que vous souhaitez toucher après charges sociales</p>
+                </div>
+
+                <!-- 2. Statut juridique -->
+                <div>
+                    <label for="status" class="block text-sm font-semibold text-slate-700 mb-1.5" data-i18n="label-status">
+                        Statut juridique
+                    </label>
+                    <select
+                        id="status"
+                        class="w-full border-2 border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-medium focus:outline-none focus:border-indigo-400 transition bg-white cursor-pointer"
+                        onchange="calculate()">
+                        <option value="0.22" data-i18n-opt="status-ae">Auto-entrepreneur (≈22%)</option>
+                        <option value="0.45" data-i18n-opt="status-sasu">SASU / Portage salarial (≈45%)</option>
+                        <option value="0.40" selected data-i18n-opt="status-eurl">EURL (≈40%)</option>
+                        <option value="0.30" data-i18n-opt="status-liberal">Profession libérale (≈30%)</option>
+                    </select>
+                </div>
+
+                <!-- 3. Jours facturables -->
+                <div>
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label for="days" class="text-sm font-semibold text-slate-700" data-i18n="label-days">Jours facturables / an</label>
+                        <span class="text-indigo-600 font-black text-lg" id="days-display">220</span>
+                    </div>
+                    <input
+                        type="range"
+                        id="days"
+                        min="50" max="250" value="220" step="5"
+                        class="w-full accent-indigo-600 cursor-pointer"
+                        oninput="document.getElementById('days-display').textContent = this.value; calculate()">
+                    <div class="flex justify-between text-xs text-slate-400 mt-1">
+                        <span data-i18n="days-min">50j (mi-temps)</span>
+                        <span data-i18n="days-max">250j (max)</span>
+                    </div>
+                </div>
+
+                <!-- 4. Marge de sécurité -->
+                <div>
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label for="margin" class="text-sm font-semibold text-slate-700" data-i18n="label-margin">Marge de sécurité</label>
+                        <span class="text-indigo-600 font-black text-lg" id="margin-display">15%</span>
+                    </div>
+                    <input
+                        type="range"
+                        id="margin"
+                        min="0" max="40" value="15" step="5"
+                        class="w-full accent-indigo-600 cursor-pointer"
+                        oninput="document.getElementById('margin-display').textContent = this.value + '%'; calculate()">
+                    <p class="text-xs text-slate-400 mt-1" data-i18n="margin-hint">Couvre les congés, périodes creuses et temps non-facturable</p>
+                </div>
+            </div>
+
+
+            <!-- ===== RÉSULTATS (colonne droite) ===== -->
+            <div class="flex flex-col gap-4">
+
+                <!-- TJM affiché en grand -->
+                <div class="bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl p-6 text-white text-center flex-1 flex flex-col justify-center">
+                    <p class="text-indigo-100 text-sm font-medium mb-3" data-i18n="result-label">Votre TJM recommandé</p>
+                    <div class="flex items-end justify-center gap-2">
+                        <span class="text-7xl font-black leading-none" id="tjm-result">—</span>
+                        <span class="text-2xl font-bold text-indigo-200 mb-1">€</span>
+                    </div>
+                    <p class="text-indigo-200 text-sm mt-2">/ <span data-i18n="per-day">jour</span></p>
+                </div>
+
+                <!-- Détail du calcul -->
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-5 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-500 text-sm" data-i18n="detail-gross">CA annuel nécessaire</span>
+                        <span class="font-bold text-slate-800" id="annual-revenue">—</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-500 text-sm" data-i18n="detail-charges">Charges estimées</span>
+                        <span class="font-bold text-red-500" id="charges-amount">—</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-500 text-sm" data-i18n="detail-margin-amount">Marge de sécurité</span>
+                        <span class="font-bold text-amber-500" id="margin-amount">—</span>
+                    </div>
+                    <div class="border-t border-slate-200 pt-3 flex justify-between items-center">
+                        <span class="text-slate-600 text-sm font-medium" data-i18n="detail-monthly">Net mensuel équivalent</span>
+                        <span class="font-black text-indigo-600 text-lg" id="monthly-equiv">—</span>
+                    </div>
+                </div>
+
+                <!-- CTA vers le prochain outil -->
+                <button class="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold py-3.5 px-6 rounded-xl transition text-sm shadow-lg shadow-indigo-200">
+                    <span data-i18n="cta-quote">→ Générer un devis avec ce TJM</span>
+                </button>
+                <p class="text-center text-xs text-slate-400" data-i18n="cta-hint">Bientôt disponible</p>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ======================================================
+         CONTENU SEO (texte + FAQ pour Google)
+         ====================================================== -->
+    <div class="mt-14 space-y-10">
+
+        <!-- Article explicatif -->
+        <div>
+            <h2 class="text-2xl font-bold text-slate-800 mb-5" data-i18n="seo-h2">
+                Comment calculer son TJM en tant que freelance ?
+            </h2>
+            <div class="bg-white rounded-2xl p-6 text-slate-600 leading-relaxed space-y-4 border border-slate-100">
+                <p data-i18n="seo-p1">
+                    Le <strong class="text-slate-800">TJM (Taux Journalier Moyen)</strong> est le tarif que vous facturez à vos clients pour une journée de travail. C'est la base de toute négociation tarifaire en freelance.
+                </p>
+                <p data-i18n="seo-p2">
+                    Partez de votre <strong class="text-slate-800">objectif de revenu net annuel</strong>, ajoutez les charges sociales liées à votre statut, puis divisez par le nombre de jours facturables dans l'année.
+                </p>
+                <p data-i18n="seo-p3">
+                    Intégrez toujours une <strong class="text-slate-800">marge de sécurité</strong> pour couvrir les périodes creuses, les congés et le temps non-facturable (prospection, admin, comptabilité).
+                </p>
+                <!-- Formule mise en avant pour le SEO -->
+                <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 mt-2">
+                    <p class="text-xs font-semibold text-indigo-500 mb-2 uppercase tracking-wide" data-i18n="formula-label">La formule</p>
+                    <p class="font-mono text-slate-700 text-sm" data-i18n="formula">
+                        TJM = (Revenu net ÷ (1 − taux charges)) × (1 + marge) ÷ jours facturables
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ (balises details/summary = accessibles + SEO-friendly) -->
+        <div>
+            <h3 class="text-xl font-bold text-slate-800 mb-4" data-i18n="faq-title">FAQ — Calculer son TJM</h3>
+            <div class="space-y-3">
+
+                <details class="group bg-white rounded-xl border border-slate-100 p-5 cursor-pointer">
+                    <summary class="font-semibold text-slate-800 list-none flex justify-between items-center">
+                        <span data-i18n="faq1-q">Quel est le TJM moyen d'un freelance en France ?</span>
+                        <span class="text-indigo-400 transition-transform group-open:rotate-180">▼</span>
+                    </summary>
+                    <p class="text-slate-600 text-sm mt-3 leading-relaxed" data-i18n="faq1-a">
+                        Le TJM varie selon le secteur : entre 300€/j pour un dev junior et 800€/j+ pour un consultant senior. En marketing digital, il se situe généralement entre 250€ et 500€/j.
+                    </p>
+                </details>
+
+                <details class="group bg-white rounded-xl border border-slate-100 p-5 cursor-pointer">
+                    <summary class="font-semibold text-slate-800 list-none flex justify-between items-center">
+                        <span data-i18n="faq2-q">Faut-il négocier son TJM à la hausse ?</span>
+                        <span class="text-indigo-400 transition-transform group-open:rotate-180">▼</span>
+                    </summary>
+                    <p class="text-slate-600 text-sm mt-3 leading-relaxed" data-i18n="faq2-a">
+                        Oui, toujours. Ajoutez 10 à 20% au-dessus de votre minimum — les clients négocient souvent à la baisse. Partir plus haut vous donne de la marge sans tomber sous votre seuil de rentabilité.
+                    </p>
+                </details>
+
+                <details class="group bg-white rounded-xl border border-slate-100 p-5 cursor-pointer">
+                    <summary class="font-semibold text-slate-800 list-none flex justify-between items-center">
+                        <span data-i18n="faq3-q">Quelle différence entre TJM et tarif horaire ?</span>
+                        <span class="text-indigo-400 transition-transform group-open:rotate-180">▼</span>
+                    </summary>
+                    <p class="text-slate-600 text-sm mt-3 leading-relaxed" data-i18n="faq3-a">
+                        Le TJM couvre une journée de 7 à 8 heures. Pour un tarif horaire, divisez votre TJM par 7. En B2B et consulting, le TJM est le format standard.
+                    </p>
+                </details>
+
+                <details class="group bg-white rounded-xl border border-slate-100 p-5 cursor-pointer">
+                    <summary class="font-semibold text-slate-800 list-none flex justify-between items-center">
+                        <span data-i18n="faq4-q">Quel statut choisir pour optimiser son TJM net ?</span>
+                        <span class="text-indigo-400 transition-transform group-open:rotate-180">▼</span>
+                    </summary>
+                    <p class="text-slate-600 text-sm mt-3 leading-relaxed" data-i18n="faq4-a">
+                        L'auto-entrepreneur (≈22%) est idéal pour démarrer. Au-delà de 50-70k€/an, l'EURL ou la SASU deviennent plus avantageuses. Consultez un expert-comptable pour votre situation.
+                    </p>
+                </details>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<!-- ======================================================
+     FOOTER
+     ====================================================== -->
+<footer class="bg-white border-t border-slate-200 mt-16 py-10">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+        <div class="flex items-center justify-center gap-2 mb-3">
+            <span class="text-xl">⚡</span>
+            <span class="font-black text-indigo-600">FreelanceTools</span>
+        </div>
+        <p class="text-slate-500 text-sm mb-1" data-i18n="footer-text">Outils gratuits pour freelances — TJM, Devis, Contrats, Charges</p>
+        <p class="text-slate-400 text-xs" data-i18n="footer-disclaimer">Les résultats sont des estimations indicatives. Consultez un expert-comptable pour votre situation personnelle.</p>
+    </div>
+</footer>
+
+
+<!-- ======================================================
+     JAVASCRIPT
+     ====================================================== -->
+<script>
+
+// ─────────────────────────────────────────────────────────
+//  1. DICTIONNAIRE DE TRADUCTIONS (FR + EN)
+// ─────────────────────────────────────────────────────────
+const i18n = {
+    fr: {
+        "page-title":           "Calculateur TJM Freelance — Outil gratuit | FreelanceTools",
+        "page-desc":            "Calculez votre TJM gratuitement. Estimez votre tarif journalier selon votre statut et vos objectifs de revenus.",
+        "nav-tjm":              "Calcul TJM",
+        "nav-quote":            "Générateur devis",
+        "nav-contract":         "Contrat",
+        "nav-charges":          "Calcul charges",
+        "badge":                "✨ Outil 100% gratuit — aucune inscription",
+        "hero-title":           "Calculez votre TJM<br>en 30 secondes",
+        "hero-sub":             "Trouvez le taux journalier idéal selon votre statut, vos charges et votre objectif de revenu net.",
+        "calc-title":           "Simulateur de TJM",
+        "label-salary":         "Revenu net annuel cible (€)",
+        "hint-salary":          "Ce que vous souhaitez toucher après charges sociales",
+        "label-status":         "Statut juridique",
+        "status-ae":            "Auto-entrepreneur (≈22%)",
+        "status-sasu":          "SASU / Portage salarial (≈45%)",
+        "status-eurl":          "EURL (≈40%)",
+        "status-liberal":       "Profession libérale (≈30%)",
+        "label-days":           "Jours facturables / an",
+        "days-min":             "50j (mi-temps)",
+        "days-max":             "250j (max)",
+        "label-margin":         "Marge de sécurité",
+        "margin-hint":          "Couvre les congés, périodes creuses et temps non-facturable",
+        "result-label":         "Votre TJM recommandé",
+        "per-day":              "jour",
+        "detail-gross":         "CA annuel nécessaire",
+        "detail-charges":       "Charges estimées",
+        "detail-margin-amount": "Marge de sécurité",
+        "detail-monthly":       "Net mensuel équivalent",
+        "cta-quote":            "→ Générer un devis avec ce TJM",
+        "cta-hint":             "Bientôt disponible",
+        "seo-h2":               "Comment calculer son TJM en tant que freelance ?",
+        "seo-p1":               "Le <strong class='text-slate-800'>TJM (Taux Journalier Moyen)</strong> est le tarif que vous facturez à vos clients pour une journée de travail. C'est la base de toute négociation tarifaire en freelance.",
+        "seo-p2":               "Partez de votre <strong class='text-slate-800'>objectif de revenu net annuel</strong>, ajoutez les charges sociales liées à votre statut, puis divisez par le nombre de jours facturables dans l'année.",
+        "seo-p3":               "Intégrez toujours une <strong class='text-slate-800'>marge de sécurité</strong> pour couvrir les périodes creuses, les congés et le temps non-facturable (prospection, admin, comptabilité).",
+        "formula-label":        "La formule",
+        "formula":              "TJM = (Revenu net ÷ (1 − taux charges)) × (1 + marge) ÷ jours facturables",
+        "faq-title":            "FAQ — Calculer son TJM",
+        "faq1-q":               "Quel est le TJM moyen d'un freelance en France ?",
+        "faq1-a":               "Le TJM varie selon le secteur : entre 300€/j pour un dev junior et 800€/j+ pour un consultant senior. En marketing digital, il se situe généralement entre 250€ et 500€/j.",
+        "faq2-q":               "Faut-il négocier son TJM à la hausse ?",
+        "faq2-a":               "Oui, toujours. Ajoutez 10 à 20% au-dessus de votre minimum — les clients négocient souvent à la baisse. Partir plus haut vous donne de la marge sans tomber sous votre seuil de rentabilité.",
+        "faq3-q":               "Quelle différence entre TJM et tarif horaire ?",
+        "faq3-a":               "Le TJM couvre une journée de 7 à 8 heures. Pour un tarif horaire, divisez votre TJM par 7. En B2B et consulting, le TJM est le format standard.",
+        "faq4-q":               "Quel statut choisir pour optimiser son TJM net ?",
+        "faq4-a":               "L'auto-entrepreneur (≈22%) est idéal pour démarrer. Au-delà de 50-70k€/an, l'EURL ou la SASU deviennent plus avantageuses. Consultez un expert-comptable pour votre situation.",
+        "footer-text":          "Outils gratuits pour freelances — TJM, Devis, Contrats, Charges",
+        "footer-disclaimer":    "Les résultats sont des estimations indicatives. Consultez un expert-comptable pour votre situation personnelle.",
+    },
+    en: {
+        "page-title":           "Freelance Day Rate Calculator — Free Tool | FreelanceTools",
+        "page-desc":            "Calculate your freelance day rate for free. Estimate your daily rate based on your legal structure and income goals.",
+        "nav-tjm":              "Day Rate",
+        "nav-quote":            "Invoice Generator",
+        "nav-contract":         "Contract",
+        "nav-charges":          "Tax Calculator",
+        "badge":                "✨ 100% free — no sign-up required",
+        "hero-title":           "Calculate your day rate<br>in 30 seconds",
+        "hero-sub":             "Find the right daily rate based on your legal structure, taxes, and net income goal.",
+        "calc-title":           "Day rate simulator",
+        "label-salary":         "Annual net income target (€)",
+        "hint-salary":          "What you want to take home after taxes",
+        "label-status":         "Legal structure",
+        "status-ae":            "Sole trader / AE (≈22%)",
+        "status-sasu":          "Limited company / SASU (≈45%)",
+        "status-eurl":          "LLC / EURL (≈40%)",
+        "status-liberal":       "Liberal profession (≈30%)",
+        "label-days":           "Billable days / year",
+        "days-min":             "50d (part-time)",
+        "days-max":             "250d (max)",
+        "label-margin":         "Safety margin",
+        "margin-hint":          "Covers holidays, slow periods and non-billable time",
+        "result-label":         "Your recommended day rate",
+        "per-day":              "day",
+        "detail-gross":         "Annual revenue needed",
+        "detail-charges":       "Estimated taxes",
+        "detail-margin-amount": "Safety margin",
+        "detail-monthly":       "Monthly net equivalent",
+        "cta-quote":            "→ Create an invoice with this rate",
+        "cta-hint":             "Coming soon",
+        "seo-h2":               "How to calculate your freelance day rate?",
+        "seo-p1":               "Your <strong class='text-slate-800'>day rate</strong> is the amount you charge clients per day of work. It's the foundation of every pricing negotiation as a freelancer.",
+        "seo-p2":               "Start from your <strong class='text-slate-800'>target annual net income</strong>, add social contributions tied to your legal structure, then divide by the number of billable days per year.",
+        "seo-p3":               "Always include a <strong class='text-slate-800'>safety margin</strong> to cover slow periods, holidays, and non-billable time (business development, admin, accounting).",
+        "formula-label":        "The formula",
+        "formula":              "Day Rate = (Net income ÷ (1 − tax rate)) × (1 + margin) ÷ billable days",
+        "faq-title":            "FAQ — Freelance Day Rate",
+        "faq1-q":               "What is the average freelance day rate in France?",
+        "faq1-a":               "Average day rates vary widely: from €300/day for a junior developer to €800+/day for a senior consultant. In digital marketing, it's typically €250–€500/day.",
+        "faq2-q":               "Should you quote above your minimum rate?",
+        "faq2-a":               "Always. Add 10–20% above your minimum — clients often negotiate down. Starting higher gives you room to maneuver without falling below break-even.",
+        "faq3-q":               "Day rate vs hourly rate — what's the difference?",
+        "faq3-a":               "A day rate covers a 7–8 hour workday. Divide by 7 to get an hourly rate. In B2B and consulting, day rates are the standard format.",
+        "faq4-q":               "Which legal structure optimizes your net income?",
+        "faq4-a":               "The auto-entrepreneur status (≈22%) is simplest to start. Above €50–70k/year, an EURL or SASU become more tax-efficient. Consult an accountant for your situation.",
+        "footer-text":          "Free tools for freelancers — Day Rate, Invoices, Contracts, Taxes",
+        "footer-disclaimer":    "Results are estimates for guidance only. Consult an accountant for your personal situation.",
+    }
+};
+
+
+// ─────────────────────────────────────────────────────────
+//  2. GESTION DE LA LANGUE
+// ─────────────────────────────────────────────────────────
+let currentLang = 'fr';
+
+function toggleLang() {
+    currentLang = currentLang === 'fr' ? 'en' : 'fr';
+    applyTranslations();
+    calculate();
+}
+
+function applyTranslations() {
+    const t = i18n[currentLang];
+
+    // Mettre à jour tous les éléments avec l'attribut data-i18n
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key] !== undefined) el.innerHTML = t[key];
+    });
+
+    // Mettre à jour les options du <select> (data-i18n-opt)
+    document.querySelectorAll('[data-i18n-opt]').forEach(el => {
+        const key = el.getAttribute('data-i18n-opt');
+        if (t[key] !== undefined) el.textContent = t[key];
+    });
+
+    // Mettre à jour le titre de l'onglet
+    document.title = t['page-title'];
+
+    // Mettre à jour la meta description (pour le SEO)
+    document.querySelector('meta[name="description"]').setAttribute('content', t['page-desc']);
+
+    // Mettre à jour l'attribut lang du <html>
+    document.documentElement.lang = currentLang;
+
+    // Mettre à jour le bouton de langue
+    document.getElementById('lang-flag').textContent = currentLang === 'fr' ? '🇬🇧' : '🇫🇷';
+    document.getElementById('lang-label').textContent = currentLang === 'fr' ? 'EN' : 'FR';
+}
+
+
+// ─────────────────────────────────────────────────────────
+//  3. LOGIQUE DU CALCULATEUR TJM
+// ─────────────────────────────────────────────────────────
+function calculate() {
+    // Récupérer les valeurs saisies
+    const salary      = parseFloat(document.getElementById('salary').value) || 0;
+    const chargesRate = parseFloat(document.getElementById('status').value);
+    const days        = parseInt(document.getElementById('days').value);
+    const marginPct   = parseInt(document.getElementById('margin').value) / 100;
+
+    if (salary <= 0 || days <= 0) return;
+
+    // ── LA FORMULE ──────────────────────────────────────
+    // Étape 1 : CA brut minimum pour atteindre le revenu net souhaité
+    const grossBase = salary / (1 - chargesRate);
+
+    // Étape 2 : Ajouter la marge de sécurité
+    const grossTotal = grossBase * (1 + marginPct);
+
+    // Étape 3 : TJM = CA total ÷ jours facturables
+    const tjm = grossTotal / days;
+    // ────────────────────────────────────────────────────
+
+    // Montants pour le détail
+    const chargesEuros = grossBase * chargesRate;
+    const marginEuros  = grossBase * marginPct;
+    const monthlyNet   = salary / 12;
+
+    // Fonction utilitaire pour formater en euros : "51 282 €"
+    const fmt = (n) => Math.round(n).toLocaleString('fr-FR') + ' €';
+
+    // Afficher les résultats
+    document.getElementById('tjm-result').textContent     = Math.ceil(tjm);
+    document.getElementById('annual-revenue').textContent = fmt(grossTotal);
+    document.getElementById('charges-amount').textContent = fmt(chargesEuros);
+    document.getElementById('margin-amount').textContent  = fmt(marginEuros);
+    document.getElementById('monthly-equiv').textContent  = fmt(monthlyNet);
+}
+
+
+// ─────────────────────────────────────────────────────────
+//  4. INITIALISATION AU CHARGEMENT DE LA PAGE
+// ─────────────────────────────────────────────────────────
+calculate();
+
+</script>
+
+</body>
+</html>
