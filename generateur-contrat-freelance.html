@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Générateur de contrat freelance</title>
+  <meta name="description" content="Générateur de contrat freelance simple en HTML, CSS et JavaScript." />
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: #dbe1ea;
+      --accent: #2563eb;
+      --accent-dark: #1d4ed8;
+      --success: #0f766e;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .hero {
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin: 0 0 8px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.05);
+    }
+
+    .panel {
+      padding: 20px;
+      position: sticky;
+      top: 20px;
+    }
+
+    .panel h2,
+    .preview h2 {
+      margin-top: 0;
+      font-size: 1.25rem;
+    }
+
+    .section-title {
+      font-size: 0.95rem;
+      margin: 20px 0 12px;
+      color: var(--accent);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    label {
+      display: block;
+      font-size: 0.92rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.96rem;
+      background: #fff;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    textarea {
+      min-height: 92px;
+      resize: vertical;
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .two-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover { background: var(--accent-dark); }
+
+    .btn-secondary {
+      background: #eef2ff;
+      color: var(--accent-dark);
+    }
+
+    .btn-light {
+      background: #f3f4f6;
+      color: #111827;
+    }
+
+    .helper {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .preview {
+      padding: 24px 28px;
+    }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 16px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #ecfeff;
+      color: var(--success);
+      border: 1px solid #bae6fd;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .contract {
+      white-space: pre-line;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+
+    .notice {
+      margin-top: 18px;
+      padding: 14px;
+      border: 1px solid #fde68a;
+      background: #fffbeb;
+      border-radius: 12px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+      .panel { position: static; }
+    }
+
+    @media print {
+      body { background: white; }
+      .hero, .panel, .notice, .preview h2, .preview-header .badge { display: none !important; }
+      .container { max-width: 100%; padding: 0; }
+      .card { border: none; box-shadow: none; }
+      .preview { padding: 0; }
+      .preview-header { margin-bottom: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="hero">
+      <h1>Générateur de contrat freelance</h1>
+      <p class="subtitle">Remplis le formulaire, génère ton contrat, puis imprime-le en PDF.</p>
+    </div>
+
+    <div class="grid">
+      <form class="card panel" id="contractForm">
+        <h2>Informations du contrat</h2>
+
+        <div class="section-title">Freelance</div>
+        <div class="field">
+          <label for="freelanceName">Nom / raison sociale</label>
+          <input id="freelanceName" value="Nom du freelance" required />
+        </div>
+        <div class="field">
+          <label for="freelanceAddress">Adresse</label>
+          <textarea id="freelanceAddress">Adresse du freelance</textarea>
+        </div>
+        <div class="two-cols">
+          <div class="field">
+            <label for="freelanceStatus">Statut</label>
+            <input id="freelanceStatus" value="Micro-entreprise" />
+          </div>
+          <div class="field">
+            <label for="freelanceSiret">SIRET / identifiant</label>
+            <input id="freelanceSiret" value="000 000 000 00000" />
+          </div>
+        </div>
+
+        <div class="section-title">Client</div>
+        <div class="field">
+          <label for="clientName">Nom / société cliente</label>
+          <input id="clientName" value="Nom du client" required />
+        </div>
+        <div class="field">
+          <label for="clientAddress">Adresse du client</label>
+          <textarea id="clientAddress">Adresse du client</textarea>
+        </div>
+        <div class="field">
+          <label for="clientRepresentative">Représentant</label>
+          <input id="clientRepresentative" value="Nom du représentant" />
+        </div>
+
+        <div class="section-title">Mission</div>
+        <div class="field">
+          <label for="missionTitle">Titre de la mission</label>
+          <input id="missionTitle" value="Mission de prestation freelance" />
+        </div>
+        <div class="field">
+          <label for="missionDescription">Description de la prestation</label>
+          <textarea id="missionDescription">Le freelance s'engage à réaliser les prestations définies avec le client : conseil, production, suivi, livrables et échanges nécessaires à la mission.</textarea>
+        </div>
+        <div class="two-cols">
+          <div class="field">
+            <label for="startDate">Date de début</label>
+            <input id="startDate" type="date" />
+          </div>
+          <div class="field">
+            <label for="endDate">Date de fin</label>
+            <input id="endDate" type="date" />
+          </div>
+        </div>
+
+        <div class="section-title">Paiement</div>
+        <div class="two-cols">
+          <div class="field">
+            <label for="price">Montant (€)</label>
+            <input id="price" type="number" min="0" step="0.01" value="1500" />
+          </div>
+          <div class="field">
+            <label for="billingType">Mode de facturation</label>
+            <select id="billingType">
+              <option value="forfait">Forfait</option>
+              <option value="tjm">TJM</option>
+              <option value="horaire">Taux horaire</option>
+            </select>
+          </div>
+        </div>
+        <div class="two-cols">
+          <div class="field">
+            <label for="paymentDelay">Délai de paiement</label>
+            <input id="paymentDelay" value="30 jours" />
+          </div>
+          <div class="field">
+            <label for="latePenalty">Pénalités de retard</label>
+            <input id="latePenalty" value="Taux légal en vigueur" />
+          </div>
+        </div>
+
+        <div class="section-title">Clauses</div>
+        <div class="field">
+          <label for="confidentiality">Confidentialité</label>
+          <textarea id="confidentiality">Chaque partie s'engage à conserver confidentielles les informations, documents et échanges obtenus dans le cadre de la mission.</textarea>
+        </div>
+        <div class="field">
+          <label for="termination">Résiliation</label>
+          <textarea id="termination">Chaque partie pourra résilier le contrat en cas de manquement grave, après mise en demeure restée sans effet pendant 15 jours.</textarea>
+        </div>
+        <div class="field">
+          <label for="law">Droit applicable / juridiction</label>
+          <input id="law" value="Droit français - tribunal compétent du siège du freelance" />
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn-primary" id="generateBtn">Générer le contrat</button>
+          <button type="button" class="btn-secondary" id="printBtn">Imprimer / PDF</button>
+          <button type="reset" class="btn-light" id="resetBtn">Réinitialiser</button>
+        </div>
+        <p class="helper">Astuce : clique sur “Imprimer / PDF” pour enregistrer le contrat au format PDF depuis le navigateur.</p>
+      </form>
+
+      <div class="card preview">
+        <div class="preview-header">
+          <div>
+            <h2>Aperçu du contrat</h2>
+            <div class="helper">Le texte ci-dessous se met à jour automatiquement.</div>
+          </div>
+          <span class="badge">Modèle personnalisable</span>
+        </div>
+
+        <div id="contractOutput" class="contract"></div>
+
+        <div class="notice">
+          Ce modèle est un point de départ. Pour un usage juridique sensible, fais relire le contrat par un professionnel du droit.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const fields = [
+      'freelanceName', 'freelanceAddress', 'freelanceStatus', 'freelanceSiret',
+      'clientName', 'clientAddress', 'clientRepresentative',
+      'missionTitle', 'missionDescription', 'startDate', 'endDate',
+      'price', 'billingType', 'paymentDelay', 'latePenalty',
+      'confidentiality', 'termination', 'law'
+    ];
+
+    const elements = Object.fromEntries(fields.map(id => [id, document.getElementById(id)]));
+    const output = document.getElementById('contractOutput');
+    const form = document.getElementById('contractForm');
+
+    function formatDate(value) {
+      if (!value) return 'à compléter';
+      const date = new Date(value + 'T00:00:00');
+      return new Intl.DateTimeFormat('fr-FR', {
+        day: '2-digit', month: 'long', year: 'numeric'
+      }).format(date);
+    }
+
+    function formatAmount(value) {
+      const number = Number(value || 0);
+      return new Intl.NumberFormat('fr-FR', {
+        style: 'currency',
+        currency: 'EUR'
+      }).format(number);
+    }
+
+    function billingLabel(value) {
+      if (value === 'tjm') return 'sur la base d\'un tarif journalier moyen';
+      if (value === 'horaire') return 'sur la base d\'un taux horaire';
+      return 'au forfait';
+    }
+
+    function generateContract() {
+      const text = `CONTRAT DE PRESTATION DE SERVICES FREELANCE
+
+Entre les soussignés :
+
+1. Le Prestataire
+${elements.freelanceName.value}
+${elements.freelanceAddress.value}
+Statut : ${elements.freelanceStatus.value}
+SIRET / Identifiant : ${elements.freelanceSiret.value}
+
+Et
+
+2. Le Client
+${elements.clientName.value}
+${elements.clientAddress.value}
+Représenté par : ${elements.clientRepresentative.value}
+
+Il a été convenu ce qui suit :
+
+Article 1 - Objet du contrat
+Le présent contrat a pour objet la réalisation de la mission suivante : ${elements.missionTitle.value}.
+
+Description de la prestation :
+${elements.missionDescription.value}
+
+Article 2 - Durée
+Le contrat prend effet à compter du ${formatDate(elements.startDate.value)}.
+La mission se terminera le ${formatDate(elements.endDate.value)}, sauf prolongation ou résiliation anticipée selon les conditions prévues ci-dessous.
+
+Article 3 - Modalités d'exécution
+Le Prestataire exécute sa mission de manière indépendante, sans lien de subordination. Il organise librement son travail et s'engage à fournir les livrables attendus dans les délais convenus avec le Client.
+
+Article 4 - Prix et paiement
+Le montant de la prestation est fixé à ${formatAmount(elements.price.value)} ${billingLabel(elements.billingType.value)}.
+Le règlement devra être effectué dans un délai de ${elements.paymentDelay.value} à compter de l'émission de la facture.
+En cas de retard de paiement, les pénalités suivantes seront appliquées : ${elements.latePenalty.value}.
+
+Article 5 - Obligations des parties
+Le Prestataire s'engage à réaliser la mission avec soin, diligence et professionnalisme.
+Le Client s'engage à fournir au Prestataire toutes les informations, validations et accès nécessaires à la bonne exécution de la mission.
+
+Article 6 - Confidentialité
+${elements.confidentiality.value}
+
+Article 7 - Propriété intellectuelle
+Sauf mention contraire écrite, les livrables réalisés dans le cadre du contrat sont cédés au Client après paiement complet des sommes dues. Les méthodes, outils et savoir-faire propres au Prestataire restent sa propriété.
+
+Article 8 - Résiliation
+${elements.termination.value}
+
+Article 9 - Droit applicable
+Le présent contrat est soumis à : ${elements.law.value}.
+
+Fait entre le Prestataire et le Client, en deux exemplaires.
+
+Signature du Prestataire :
+
+
+Signature du Client :`;
+
+      output.textContent = text;
+    }
+
+    fields.forEach(id => {
+      elements[id].addEventListener('input', generateContract);
+      elements[id].addEventListener('change', generateContract);
+    });
+
+    document.getElementById('generateBtn').addEventListener('click', generateContract);
+    document.getElementById('printBtn').addEventListener('click', () => {
+      generateContract();
+      window.print();
+    });
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      setTimeout(generateContract, 0);
+    });
+
+    const today = new Date();
+    const nextMonth = new Date();
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    elements.startDate.value = today.toISOString().slice(0, 10);
+    elements.endDate.value = nextMonth.toISOString().slice(0, 10);
+
+    generateContract();
+  </script>
+</body>
+</html>
